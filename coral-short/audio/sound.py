@@ -6,7 +6,7 @@
   * Music: a quiet lo-fi hip-hop beat (92 bpm, kick/snare/hats, sub bass, island marimba + pad, vinyl crackle) that opens
     on a kick + sub hit, drops on the surface burst, re-locks its downbeat to each cut, stops dead on the comic beats
     (tape stop), goes under water (low-passed) with the camera, and ends on a button chord.
-  * Mix: voice untouched, music ducked under speech and sitting ~13.5 LU under the voice, SFX ~9 LU under, master to
+  * Mix: voice untouched, music ducked under speech and sitting ~8 LU under the voice (measured above 250 Hz, i.e. on a phone speaker), SFX ~9 LU under, master to
     -14 LUFS integrated with a 4x-oversampled look-ahead limiter at -1 dBTP; exact picture length, 48 kHz stereo.
 Writes audio/out/mix.wav (+ stems) and audio/out/cues.md.
 """
@@ -404,7 +404,7 @@ def kick(vel=1.0, r=None):
     d = 0.5
     t = tt(d)
     f = 48 + 110 * np.exp(-t / 0.035)
-    y = np.sin(phase(f)) * np.exp(-t / 0.22) + 0.6 * lp(r.standard_normal(len(t)), 3000) * np.exp(-t / 0.004)
+    y = np.sin(phase(f)) * np.exp(-t / 0.22) + 1.1 * bp(r.standard_normal(len(t)), 1500, 5000, 1) * np.exp(-t / 0.006)
     return fades(np.tanh(1.6 * y) * vel, 0.0003, 0.05)
 
 
@@ -461,11 +461,11 @@ def beat(M, a, b, r, beat0=None, kind="full", vel=1.0):
             if kind == "full" and bt == 1 and bar % 2 == 1:
                 place(M, st(kick(0.6 * vel, r)), tb + LB / 2 + sw)
             if (kind != "half" and bt in (1, 3)) or (kind == "half" and bt == 2):
-                place(M, pan(snare_lofi(0.75 * vel, r), 0.05), tb)
+                place(M, pan(snare_lofi(0.95 * vel, r), 0.05), tb)
             for q in range(2):
                 tq = tb + q * LB / 2 + (sw if q else 0)
                 if tq < b:
-                    place(M, pan(hat((0.32 if q else 0.22) * vel, r, open_=(kind == "full" and bt == 3 and q == 1)), 0.35), tq)
+                    place(M, pan(hat((0.55 if q else 0.4) * vel, r, open_=(kind == "full" and bt == 3 and q == 1)), 0.35), tq)
         if kind in ("full", "half", "under", "light") and bt == 0:
             place(M, st(sub(I.m2f(ROOT - 12 + ch), min(4 * LB, b - tb), 0.7 * vel)), tb)
             fr_ = [I.m2f(ROOT + 12 + ch + x) for x in (TRIADS[ch][1], TRIADS[ch][2], 11 if TRIADS[ch][1] == 4 else 10)]
@@ -476,7 +476,7 @@ def beat(M, a, b, r, beat0=None, kind="full", vel=1.0):
             for q, semi in enumerate((12, 16) if bt == 0 else (19, 14)):
                 tn = tb + q * LB * 0.75
                 if tn < b - 0.05:
-                    place(M, pan(marimba(I.m2f(ROOT + ch + semi), 0.4 * vel, r, 0.8), -0.3 + 0.6 * q), tn)
+                    place(M, pan(marimba(I.m2f(ROOT + 12 + ch + semi), 0.6 * vel, r, 0.8), -0.3 + 0.6 * q), tn)
         k += 1
 
 
@@ -556,7 +556,7 @@ def build_music():
     place(M, I.pad([I.m2f(x) for x in (50, 57, 66)], 0.6, 0.4, r, att=0.05, rel=0.6) * 0.5, end)
     # lo-fi glue: vinyl crackle, gentle top roll-off, small room
     M += st(crackle(Q.DUR, r)) * 0.5
-    M = lp(M, 9000, 1)
+    M = lp(M, 11000, 1)
     ir = make_ir(0.9, 3, pre=0.01, hf=1.6)
     M = M + convolve_st(M, ir) * 0.14
     return M
@@ -623,8 +623,9 @@ def main():
     log("music ...")
     M = build_music()
     # levels relative to the voice (integrated), music ducked under speech
-    M *= dbg(Lv - 13.5 - integrated(M))
-    M *= duck_curve(-5.0)[None, :]
+    # level set on what a phone speaker plays (> 250 Hz), so the beat is audible on phones, not only on headphones
+    M *= dbg(Lv - 8.0 - integrated(hp(M, 250, 2)))
+    M *= duck_curve(-3.0)[None, :]
     S *= dbg(Lv - 9.5 - integrated(S))
     mix = V + M + S
     g = dbg(TARGET - integrated(mix))
