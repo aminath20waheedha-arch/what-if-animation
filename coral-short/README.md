@@ -37,3 +37,9 @@ python voice/tts.py && python audio/sound.py     # needs ffmpeg, numpy, scipy, e
 | `src/coral/paint2.ts` | Maldives textures: coral stone, carved frieze, fronds, thatch, lacquer, sea floor |
 | `ink.ts`, `lensblur.ts`, `grade.ts`, `shade.ts`, `cardshade.ts`, `paint.ts`, `build.ts` | the look, from the skill's templates |
 | `audio/` | DSP kit and generators from the skill, plus `sound.py` (SFX, music, mix) and `cues.py` |
+
+## Coral Island 1658 (the game)
+`game/game.ts` is a walk-around 3D game on the same set, built from the short's own drawing code (toon.ts cast on
+camera-facing cards, paint2.ts textures, shade.ts two-tone light, inked outlines). Build the single-file page with
+`npx esbuild game/game.ts --bundle --minify --format=iife --outfile=out/game.js` and inline it into
+`game/coral-island.html` (the published copy). Touch joystick + Talk button on phones, WASD + E on desktop.
