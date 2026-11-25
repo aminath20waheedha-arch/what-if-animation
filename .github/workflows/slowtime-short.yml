@@ -1,0 +1,89 @@
+name: Render What If slow-time short
+
+# Renders the What If skill's "slowtime" episode as a 9:16 Short (composition SlowTimeShort in studio/): the voice, sound
+# effects and the trap beat are already in studio/public/slowtime (made with ElevenLabs + beat.py), so the runners only
+# render. 4 parallel picture chunks (SVG, no WebGL needed), one audio render, then join + mux + -14 LUFS master.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "studio/src/episodes/slowtime/**"
+      - "studio/src/SlowTimeShort.tsx"
+      - "studio/public/slowtime/**"
+      - ".github/workflows/slowtime-short.yml"
+
+concurrency:
+  group: slowtime-short-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: studio
+
+jobs:
+  picture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+      - run: npm ci --no-audit --no-fund && npx remotion browser ensure
+      - name: Frame range
+        id: range
+        run: |
+          total=$(python3 -c "import json; print(json.load(open('src/episodes/slowtime/timeline.json'))['total'])")
+          a=$(( total * ${{ matrix.chunk }} / 4 )); b=$(( total * (${{ matrix.chunk }} + 1) / 4 - 1 ))
+          echo "a=$a" >> "$GITHUB_OUTPUT"; echo "b=$b" >> "$GITHUB_OUTPUT"
+      - name: Render frames ${{ steps.range.outputs.a }}-${{ steps.range.outputs.b }}
+        run: |
+          npx remotion render src/index.ts SlowTimeShort out/part.mp4 --frames=${{ steps.range.outputs.a }}-${{ steps.range.outputs.b }} \
+            --codec=h264 --crf=17 --pixel-format=yuv420p --muted --concurrency=4 --timeout=120000 --log=info
+          mkdir -p out/parts && mv out/part.mp4 out/parts/part_${{ matrix.chunk }}.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slowtime-part-${{ matrix.chunk }}
+          path: studio/out/parts/*.mp4
+          retention-days: 3
+
+  assemble:
+    needs: picture
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: npm ci --no-audit --no-fund && npx remotion browser ensure
+      - name: Render the mix (voice + effects + beat, as the composition plays them)
+        run: npx remotion render src/index.ts SlowTimeShort out/mix.wav --codec=wav --log=error
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: slowtime-part-*
+          merge-multiple: true
+          path: _parts
+      - name: Join, mux, master to -14 LUFS
+        run: |
+          ls ../_parts | sort | sed "s#^#file '$(cd ../_parts && pwd)/#; s#\$#'#" > parts.txt && cat parts.txt
+          ffmpeg -hide_banner -y -f concat -safe 0 -i parts.txt -c copy picture.mp4
+          ffmpeg -hide_banner -y -i picture.mp4 -i out/mix.wav -map 0:v:0 -map 1:a:0 -c:v copy \
+            -af loudnorm=I=-14:TP=-1.5:LRA=11 -ar 48000 -c:a aac -b:a 256k -shortest -movflags +faststart slowtime-short.mp4
+          ffprobe -v error -show_entries stream=codec_name,width,height,nb_frames,duration -of compact slowtime-short.mp4
+          mkdir -p ../_final && mv slowtime-short.mp4 ../_final/
+          ffmpeg -hide_banner -y -ss 15 -i ../_final/slowtime-short.mp4 -frames:v 1 -vf scale=540:-1 ../_final/thumb.jpg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slowtime-short-final
+          path: _final/
+          retention-days: 30

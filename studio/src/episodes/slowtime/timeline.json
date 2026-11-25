@@ -1,0 +1,284 @@
+{
+ "slug": "slowtime",
+ "title": "WHAT IF TIME WAS 10X SLOWER FOR YOU?",
+ "fps": 30,
+ "total": 2616,
+ "segments": [
+  {
+   "shot": "S1",
+   "a": 0,
+   "b": 125,
+   "t0": 0,
+   "t1": 125,
+   "line": "You sit down for one bite. Your pizza is already cold. You",
+   "look": "time"
+  },
+  {
+   "shot": "S2",
+   "a": 125,
+   "b": 214,
+   "t0": 0,
+   "t1": 89,
+   "line": "blink in class. Everyone's gone home. You",
+   "look": "time"
+  },
+  {
+   "shot": "S3",
+   "a": 214,
+   "b": 282,
+   "t0": 0,
+   "t1": 68,
+   "line": "tie your shoe. The sun sets.",
+   "look": "time"
+  },
+  {
+   "shot": "S4",
+   "a": 282,
+   "b": 452,
+   "t0": 0,
+   "t1": 170,
+   "line": "What if time moved ten times slower, but only for you? At first, it's amazing."
+  },
+  {
+   "shot": "S5",
+   "a": 452,
+   "b": 564,
+   "t0": 0,
+   "t1": 112,
+   "line": "A three hour car ride? Over before your song ends.",
+   "look": "time"
+  },
+  {
+   "shot": "S6",
+   "a": 564,
+   "b": 654,
+   "t0": 0,
+   "t1": 90,
+   "line": "Waiting for your birthday? Two days, tops.",
+   "look": "time"
+  },
+  {
+   "shot": "S7",
+   "a": 654,
+   "b": 1031,
+   "t0": 0,
+   "t1": 377,
+   "line": "And here's the crazy part. This is real. In nineteen- oh- five, Albert Einstein said the faster you move, the slower your time ticks. Nobody could test it. Until nineteen seventy- one. Two"
+  },
+  {
+   "shot": "S8",
+   "a": 1031,
+   "b": 1399,
+   "t0": 0,
+   "t1": 368,
+   "line": "scientists flew atomic clocks around the world on normal passenger planes. When they landed, the clocks were off by a few billionths of a second. Exactly what Einstein predicted."
+  },
+  {
+   "shot": "S9",
+   "a": 1399,
+   "b": 1779,
+   "t0": 0,
+   "t1": 380,
+   "line": "Today, your phone depends on it. Clocks on GPS satellites run thirty- eight microseconds a day fast. That's real. Without fixing it, your map would drift ten kilometres every day. And"
+  },
+  {
+   "shot": "S10",
+   "a": 1779,
+   "b": 2009,
+   "t0": 0,
+   "t1": 230,
+   "line": "astronaut Scott Kelly spent a year in space. He came back about five milliseconds younger than his twin brother."
+  },
+  {
+   "shot": "S11",
+   "a": 2009,
+   "b": 2132,
+   "t0": 0,
+   "t1": 123,
+   "line": "Then a man in a suit shows up. He wants to send you to space. You"
+  },
+  {
+   "shot": "S12",
+   "a": 2132,
+   "b": 2248,
+   "t0": 0,
+   "t1": 116,
+   "line": "say no, and go home for dinner. One hour, for you."
+  },
+  {
+   "shot": "S13",
+   "a": 2248,
+   "b": 2385,
+   "t0": 0,
+   "t1": 137,
+   "line": "But when you walk in, your little sister is taller than you."
+  },
+  {
+   "shot": "S14",
+   "a": 2385,
+   "b": 2616,
+   "t0": 0,
+   "t1": 231,
+   "line": "Part one. Would you trade ten years for one hour? Tell me in the comments."
+  }
+ ],
+ "shots": [
+  {
+   "id": "S1",
+   "size": "medium",
+   "key": 30,
+   "len": 125,
+   "first": 0,
+   "line": "You sit down for one bite. Your pizza is already cold. You",
+   "note": "one bite: steam vanishes, the clock spins, pizza cold"
+  },
+  {
+   "id": "S2",
+   "size": "medium",
+   "key": 30,
+   "len": 89,
+   "first": 125,
+   "line": "blink in class. Everyone's gone home. You",
+   "note": "he blinks: the room empties around him"
+  },
+  {
+   "id": "S3",
+   "size": "wide",
+   "key": 40,
+   "len": 68,
+   "first": 214,
+   "line": "tie your shoe. The sun sets.",
+   "note": "he ties his shoe: the sun races down"
+  },
+  {
+   "id": "S4",
+   "size": "title, wide",
+   "key": 40,
+   "len": 170,
+   "first": 282,
+   "line": "What if time moved ten times slower, but only for you? At first, it's amazing.",
+   "note": "the sun is a clock spinning"
+  },
+  {
+   "id": "S5",
+   "size": "medium",
+   "key": 40,
+   "len": 112,
+   "first": 452,
+   "line": "A three hour car ride? Over before your song ends.",
+   "note": "the car ride over in a blink: wall clock spinning, he relaxes"
+  },
+  {
+   "id": "S6",
+   "size": "medium",
+   "key": 40,
+   "len": 90,
+   "first": 564,
+   "line": "Waiting for your birthday? Two days, tops.",
+   "note": "the calendar crosses itself off: birthday in two days"
+  },
+  {
+   "id": "S7",
+   "size": "medium",
+   "key": 90,
+   "len": 377,
+   "first": 654,
+   "line": "And here's the crazy part. This is real. In nineteen- oh- five, Albert Einstein said the faster you move, the slower your time ticks. Nobody could test it. Until nineteen seventy- one. Two",
+   "note": "1905 on the board: a fast clock ticks slow"
+  },
+  {
+   "id": "S8",
+   "size": "schematic",
+   "key": 120,
+   "len": 368,
+   "first": 1031,
+   "line": "scientists flew atomic clocks around the world on normal passenger planes. When they landed, the clocks were off by a few billionths of a second. Exactly what Einstein predicted.",
+   "note": "1971: a plane circles the globe with a clock; off by billionths"
+  },
+  {
+   "id": "S9",
+   "size": "schematic",
+   "key": 150,
+   "len": 380,
+   "first": 1399,
+   "line": "Today, your phone depends on it. Clocks on GPS satellites run thirty- eight microseconds a day fast. That's real. Without fixing it, your map would drift ten kilometres every day. And",
+   "note": "earth, GPS satellite, 38 us/day, 10 km/day"
+  },
+  {
+   "id": "S10",
+   "size": "schematic",
+   "key": 80,
+   "len": 230,
+   "first": 1779,
+   "line": "astronaut Scott Kelly spent a year in space. He came back about five milliseconds younger than his twin brother.",
+   "note": "the twins: one in space, 5 ms younger"
+  },
+  {
+   "id": "S11",
+   "size": "wide",
+   "key": 40,
+   "len": 123,
+   "first": 2009,
+   "line": "Then a man in a suit shows up. He wants to send you to space. You",
+   "note": "the suit at the door, a rocket on his clipboard"
+  },
+  {
+   "id": "S12",
+   "size": "wide",
+   "key": 60,
+   "len": 116,
+   "first": 2132,
+   "line": "say no, and go home for dinner. One hour, for you.",
+   "note": "he walks in for dinner"
+  },
+  {
+   "id": "S13",
+   "size": "two-shot",
+   "key": 50,
+   "len": 137,
+   "first": 2248,
+   "line": "But when you walk in, your little sister is taller than you.",
+   "note": "his little sister is taller than him"
+  },
+  {
+   "id": "S14",
+   "size": "close-up, red sky",
+   "key": 60,
+   "len": 231,
+   "first": 2385,
+   "line": "Part one. Would you trade ten years for one hour? Tell me in the comments.",
+   "note": "PART 1, the cracked clock sun"
+  }
+ ],
+ "fx": [
+  {
+   "kind": "flash",
+   "color": "#FFF3DC",
+   "f": 282
+  },
+  {
+   "kind": "flash",
+   "color": "#FF3344",
+   "f": 2278
+  },
+  {
+   "kind": "shake",
+   "len": 10,
+   "amp": 12,
+   "f": 2278
+  },
+  {
+   "kind": "flash",
+   "color": "#FF3344",
+   "f": 2385
+  }
+ ],
+ "audio": {
+  "voice": "slowtime/voice.wav",
+  "sfx": "slowtime/sfx.wav",
+  "voiceVol": 0.7048,
+  "sfxVol": 0.8,
+  "music": "slowtime/music.wav",
+  "musicVol": 0.7048
+ }
+}
