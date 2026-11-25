@@ -14,6 +14,7 @@ import { InkPass, noInkFallback } from "./ink";
 import { LensBlur } from "./lensblur";
 import { GradeEffect, GRADES, GRADE_STRENGTH, gradeFor } from "./grade";
 import { TOTAL, FLASHES, SHOTS, layersAt, dofAt } from "./story";
+import { Captions } from "./Captions";
 
 export const CORAL_FRAMES = TOTAL;
 
@@ -122,6 +123,7 @@ export const CoralShort: React.FC = () => {
     <AbsoluteFill style={{ background: "#9fdcea" }}>
       {layersAt(f).map((l, i) => <ShotView key={i ? "over" : "base"} id={l.id} alpha={l.alpha} />)}
       {flash > 0 && <AbsoluteFill style={{ background: "#ffffff", opacity: flash }} />}
+      {(getInputProps() as { captions?: boolean }).captions === false ? null : <Captions />}
     </AbsoluteFill>
   );
 };

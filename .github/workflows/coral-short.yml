@@ -1,7 +1,8 @@
 name: Render coral mosque short
 
 # Renders coral-short/ (the Maldives "Did you know" short) entirely on GitHub runners:
-#   1. voice + sound: free neural TTS (edge-tts, no key) with word timings, synthesized SFX + music, final mix
+#   1. voice + sound: ElevenLabs "Adam" when the ELEVENLABS_API_KEY secret is set (else free edge-tts), word timings,
+#      synthesized SFX + music, final mix. The voice is cached per script + voice, so credits are spent only on changes.
 #   2. picture: 16 parallel chunks of the Remotion / three.js composition on CPU WebGL (SwiftShader)
 #   3. assemble: join the chunks, mux the mix, upload coral-short.mp4 as an artifact
 on:
@@ -12,8 +13,11 @@ on:
         type: boolean
         default: false
       voice:
-        description: "edge-tts voice"
+        description: "edge-tts voice (used when there is no ElevenLabs key)"
         default: "en-US-AndrewNeural"
+      eleven_voice:
+        description: "ElevenLabs voice id (default Adam)"
+        default: "pNInz6obpgDQGcFmaJgB"
   push:
     paths:
       - "coral-short/**"
@@ -43,9 +47,19 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng
       - name: Python deps
         run: pip install numpy==2.1.3 scipy==1.14.1 edge-tts==7.3.1
+      - name: Restore a cached take for this script and voice
+        uses: actions/cache@v4
+        with:
+          path: |
+            coral-short/voice/voice.wav
+            coral-short/voice/voice.stamp
+            coral-short/src/coral/words.json
+          key: voice-${{ secrets.ELEVENLABS_API_KEY != '' && 'eleven' || 'edge' }}-${{ inputs.eleven_voice || 'adam' }}-${{ inputs.voice || 'andrew' }}-${{ hashFiles('coral-short/voice/script.txt', 'coral-short/voice/tts.py') }}
       - name: Narration (TTS + word timings)
         env:
           TTS_VOICE: ${{ inputs.voice || 'en-US-AndrewNeural' }}
+          ELEVEN_VOICE: ${{ inputs.eleven_voice || 'pNInz6obpgDQGcFmaJgB' }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python voice/tts.py ${{ inputs.force_tts && '--force' || '' }}
       - name: SFX + music + mix
         run: python audio/sound.py

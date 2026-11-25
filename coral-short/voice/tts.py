@@ -5,7 +5,8 @@ Writes
   voice/voice.wav          48 kHz mono 16-bit, the take (the mix reads it)
   src/coral/words.json     [{"w": word, "s": start s, "e": end s}, ...] (the picture is timed to it)
 
-Fallbacks, in order: edge-tts -> the committed take (voice/voice.wav + words.json, if present and the script did not
+Engines: ElevenLabs (when ELEVENLABS_API_KEY is set; default voice Adam, character timestamps -> word timings), else
+edge-tts. Fallbacks, in order: ElevenLabs -> edge-tts -> the committed take (voice/voice.wav + words.json, if present and the script did not
 change) -> espeak-ng (robotic, but the pipeline still finishes; word times estimated per line).
 
 usage: python voice/tts.py [--voice en-US-AndrewNeural] [--rate +6%] [--force]
@@ -85,6 +86,40 @@ async def edge_line(text, voice, rate, out_mp3):
     return words
 
 
+ADAM = "pNInz6obpgDQGcFmaJgB"  # ElevenLabs premade voice "Adam"
+
+
+def eleven_line(text, voice_id, out_mp3, model="eleven_multilingual_v2"):
+    """ElevenLabs TTS with character timestamps (key from the environment, never printed) -> word timings"""
+    import base64
+    import urllib.request
+    key = os.environ["ELEVENLABS_API_KEY"]
+    body = json.dumps({"text": text, "model_id": model,
+                       "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": True}}).encode()
+    req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps?output_format=mp3_44100_128",
+                                 data=body, headers={"xi-api-key": key, "Content-Type": "application/json", "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        d = json.load(r)
+    open(out_mp3, "wb").write(base64.b64decode(d["audio_base64"]))
+    al = d.get("alignment") or d.get("normalized_alignment")
+    chars, cs, ce = al["characters"], al["character_start_times_seconds"], al["character_end_times_seconds"]
+    words, cur = [], None
+    for ch, a, b in zip(chars, cs, ce):
+        if ch.isspace():
+            if cur:
+                words.append(cur); cur = None
+            continue
+        if cur is None:
+            cur = {"w": ch, "s": a, "e": b}
+        else:
+            cur["w"] += ch; cur["e"] = b
+    if cur:
+        words.append(cur)
+    if not words:
+        raise RuntimeError("ElevenLabs returned no alignment")
+    return words
+
+
 def espeak_line(text, out_wav):
     exe = shutil.which("espeak-ng") or shutil.which("espeak")
     if not exe:
@@ -103,7 +138,21 @@ def build(engine, voice, rate):
     os.makedirs(tmp, exist_ok=True)
     take, words, t = [np.zeros(int(LEAD_IN * SR))], [], LEAD_IN
     for i, text in enumerate(lines()):
-        if engine == "edge":
+        if engine == "eleven":
+            p = os.path.join(tmp, f"l{i:02d}.mp3")
+            ws = None
+            for attempt in range(3):
+                try:
+                    ws = eleven_line(text, voice, p)
+                    break
+                except Exception as e:
+                    log(f"line {i} attempt {attempt + 1} failed: {str(e)[:200]}")
+                    import time
+                    time.sleep(3 * (attempt + 1))
+            if ws is None:
+                raise RuntimeError("ElevenLabs failed")
+            x = decode(p)
+        elif engine == "edge":
             p = os.path.join(tmp, f"l{i:02d}.mp3")
             ws = None
             for attempt in range(4):
@@ -152,15 +201,26 @@ def main():
     ap.add_argument("--voice", default=os.environ.get("TTS_VOICE", "en-US-AndrewNeural"))
     ap.add_argument("--rate", default=os.environ.get("TTS_RATE", "+6%"))
     ap.add_argument("--force", action="store_true", help="regenerate even when the committed take matches the script")
+    ap.add_argument("--eleven-voice", default=os.environ.get("ELEVEN_VOICE") or ADAM)
     a = ap.parse_args()
-    key = hashlib.sha1((open(SCRIPT, encoding="utf-8").read() + a.voice + a.rate + json.dumps(GAPS)).encode()).hexdigest()
+    eleven = bool(os.environ.get("ELEVENLABS_API_KEY"))
+    want = ("eleven", a.eleven_voice, "") if eleven else ("edge", a.voice, a.rate)
+    key = hashlib.sha1((open(SCRIPT, encoding="utf-8").read() + "|".join(want) + json.dumps(GAPS)).encode()).hexdigest()
     have = os.path.exists(WAV) and os.path.exists(WORDS) and os.path.exists(STAMP) and open(STAMP).read().strip() == key
     if have and not a.force:
         log("committed take matches the script, voice and pauses: reusing it")
         return
+    if eleven:
+        try:
+            build("eleven", a.eleven_voice, "")
+            open(STAMP, "w").write(key)
+            return
+        except Exception as e:
+            log(f"ElevenLabs unavailable ({str(e)[:200]}), trying edge-tts")
     try:
         build("edge", a.voice, a.rate)
-        open(STAMP, "w").write(key)
+        if not eleven:
+            open(STAMP, "w").write(key)
         return
     except Exception as e:
         log(f"edge-tts unavailable ({e})")

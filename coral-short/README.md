@@ -8,8 +8,9 @@ rendered in Remotion. The story, the characters and the Maldivian set are origin
 ## Render it on GitHub (no local render needed)
 Pushing to anything under `coral-short/` runs **Actions → Render coral mosque short**. You can also run it by hand
 with *Run workflow*. Tick *force_tts* to re-voice, and pick another edge-tts voice if you like.
-1. **sound**: `voice/tts.py` makes the narration with free Microsoft neural TTS (edge-tts, no key) and its word
-   timings. `audio/sound.py` then synthesizes every SFX and an original island score, and mixes them to
+1. **sound**: `voice/tts.py` makes the narration with its word timings: **ElevenLabs "Adam"** when the repository
+   secret `ELEVENLABS_API_KEY` is set (Settings → Secrets and variables → Actions), otherwise free Microsoft neural
+   TTS (edge-tts). The take is cached per script and voice, so ElevenLabs credits are only spent when the script changes. `audio/sound.py` then synthesizes every SFX and an original island score, and mixes them to
    -14 LUFS / -1 dBTP.
 2. **picture**: 16 parallel jobs each render one slice of the 1080x1920 / 30 fps composition on CPU WebGL (SwiftShader).
 3. **assemble**: joins the slices, muxes the mix, and uploads the **`coral-short-final`** artifact (`coral-short.mp4`
@@ -28,6 +29,7 @@ python voice/tts.py && python audio/sound.py     # needs ffmpeg, numpy, scipy, e
 
 | Path | What |
 |---|---|
+| `src/coral/Captions.tsx` | word-synced captions, bottom middle (Montserrat Black, bundled under SIL OFL) |
 | `src/coral/plan.ts` | cue words → times (the single timing source) |
 | `src/coral/story.ts` | shots, eras of the set, cameras, kicks, depth of field |
 | `src/coral/world.ts` | lagoon, island, mosque in its stages, minaret, graves, town, palms, dhonis, reef |
