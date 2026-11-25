@@ -95,7 +95,7 @@ def eleven_line(text, voice_id, out_mp3, model="eleven_multilingual_v2"):
     import urllib.request
     key = os.environ["ELEVENLABS_API_KEY"]
     body = json.dumps({"text": text, "model_id": model,
-                       "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": True}}).encode()
+                       "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.15, "use_speaker_boost": True, "speed": float(os.environ.get("ELEVEN_SPEED", "1.12"))}}).encode()
     req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps?output_format=mp3_44100_128",
                                  data=body, headers={"xi-api-key": key, "Content-Type": "application/json", "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=120) as r:
@@ -205,8 +205,13 @@ def main():
     a = ap.parse_args()
     eleven = bool(os.environ.get("ELEVENLABS_API_KEY"))
     want = ("eleven", a.eleven_voice, "") if eleven else ("edge", a.voice, a.rate)
-    key = hashlib.sha1((open(SCRIPT, encoding="utf-8").read() + "|".join(want) + json.dumps(GAPS)).encode()).hexdigest()
-    have = os.path.exists(WAV) and os.path.exists(WORDS) and os.path.exists(STAMP) and open(STAMP).read().strip() == key
+    stamp_of = lambda w: hashlib.sha1((open(SCRIPT, encoding="utf-8").read() + "|".join(w) + json.dumps(GAPS)).encode()).hexdigest()
+    key = stamp_of(want)
+    cur = open(STAMP).read().strip() if os.path.exists(STAMP) else ""
+    have = os.path.exists(WAV) and os.path.exists(WORDS) and cur == key
+    if not eleven and not a.force and cur == stamp_of(("eleven", a.eleven_voice, "")) and os.path.exists(WAV) and os.path.exists(WORDS):
+        log("no ElevenLabs key here, but the committed take is an ElevenLabs take of this script: reusing it")
+        return
     if have and not a.force:
         log("committed take matches the script, voice and pauses: reusing it")
         return
