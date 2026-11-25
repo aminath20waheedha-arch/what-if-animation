@@ -1,0 +1,31 @@
+{
+  "name": "rannamaari-short",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Did-you-know short: the Maldives' coral stone mosque (2D cartoon cards in a 3D world, three.js in Remotion)",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "stills": "node scripts/stills.mjs",
+    "render": "remotion render src/index.ts CoralShort out/video.mp4 --codec h264 --crf 18 --gl=swangle"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.8.2",
+    "@react-three/postprocessing": "3.2.2",
+    "@remotion/bundler": "4.0.540",
+    "@remotion/cli": "4.0.540",
+    "@remotion/renderer": "4.0.540",
+    "@remotion/three": "4.0.540",
+    "postprocessing": "6.39.5",
+    "react": "19.2.9",
+    "react-dom": "19.2.9",
+    "remotion": "4.0.540",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "@types/three": "0.186.0",
+    "esbuild": "^0.28.2",
+    "typescript": "5.9.3"
+  }
+}
