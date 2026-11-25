@@ -17,7 +17,7 @@ const ROOF_HIP = 820 - LEG_LEN; // feet on the roof deck at y 820
 const SilDefs: React.FC = () => (
   <defs>
     <filter id="shSil" x="-60%" y="-60%" width="220%" height="220%">
-      <feColorMatrix type="matrix" values="0 0 0 0 0.03  0 0 0 0 0.025  0 0 0 0 0.07  0 0 0 1 0" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.09  0 0 0 0 0.05  0 0 0 0 0.16  0 0 0 1 0" />
       <feGaussianBlur stdDeviation="2.2" />
     </filter>
   </defs>
@@ -65,7 +65,7 @@ export const S1: React.FC<ShotProps> = ({ t }) => {
     <g transform={`${camT(1040, 640, kf(t, [[0, 1.05], [130, 1.18]]))} ${t > 21 && t < 29 ? shake(t, 21, 8, 6) : ''}`}>
       <SilDefs />
       <Rooftop t={t + 20} sunX={520} sunY={700} />
-      <GroundShadow pose={jumpPose(t - DELAY)} />
+      <GroundShadow pose={jumpPose(t - DELAY)} len={0.8} skew={38} o={0.8} />
       <Hero look={PIP} pose={me} shadow={0.6} rimId="rimR" />
     </g>
   );
@@ -90,7 +90,7 @@ export const S2: React.FC<ShotProps> = ({ t }) => {
     <g transform={`${camT(760, 520, kf(t, [[0, 1.15], [150, 1.28]]))} ${t > 30 && t < 40 ? shake(t, 30, 8, 8) : ''}`}>
       <SilDefs />
       <Stairwell t={t + 40} id="s2" />
-      <WallShadow pose={tripPose(t - DELAY)} dx={-110} dy={-90} s={1.12} o={0.6} />
+      <WallShadow pose={tripPose(t - DELAY)} dx={95} dy={-80} s={1.1} o={0.85} />
       <Hero look={PIP} pose={me} shadow={0} rimId="rimR" />
       {t > 30 && t < 66 ? <DizzyStars x={815} y={me.y - 60} t={t} rx={70} ry={26} /> : null}
     </g>
@@ -117,7 +117,7 @@ export const S3: React.FC<ShotProps> = ({ t }) => {
     <g transform={camT(970, 520, kf(t, [[0, 1.28], [140, 1.4]]))}>
       <SilDefs />
       <Classroom t={t + 60} id="s3" />
-      <WallShadow pose={wavePose(t - DELAY)} dx={-150} dy={-120} s={1.15} o={0.55} />
+      <WallShadow pose={wavePose(t - DELAY)} dx={120} dy={-110} s={1.15} o={0.8} />
       <Hero look={PIP} pose={me} shadow={0.5} rimId="rimR" />
       <Hero look={LOOKS.sis} pose={her} shadow={0.5} rimId="rimL" />
       {t > 104 ? <FocusRings x={1150} y={460} t={t - 104} r0={40} /> : null}
@@ -132,7 +132,7 @@ export const S4: React.FC<ShotProps> = ({ t }) => {
     <g transform={camT(980, 600, kf(t, [[0, 0.92], [110, 1.02]]))}>
       <SilDefs />
       <Rooftop t={t + 140} sunX={560} sunY={660} />
-      <GroundShadow pose={me} len={0.6} skew={62} o={0.55} />
+      <GroundShadow pose={me} len={0.85} skew={38} o={0.8} />
       <Hero look={PIP} pose={me} shadow={0.4} rimId="rimR" />
       <Sparkle x={560} y={640} t={t} s={1.4} />
     </g>
@@ -156,7 +156,7 @@ export const S5: React.FC<ShotProps> = ({ t }) => {
     <g transform={camT(1050, 600, kf(t, [[0, 1.05], [170, 1.15]]))}>
       <SilDefs />
       <Rooftop t={t + 220} sunX={540} sunY={700} cityLit={1.6} />
-      <GroundShadow pose={dancePose(t - DELAY)} len={0.5} skew={60} o={0.55} />
+      <GroundShadow pose={dancePose(t - DELAY)} len={0.8} skew={36} o={0.8} />
       <Hero look={PIP} pose={me} shadow={0.4} rimId="rimR" />
       <Hero look={LOOKS.mo} pose={mo} shadow={0.4} rimId="rimL" />
       <Phone x={1178} y={600} w={70} rot={-12} on={1} caller="REC" f={t} />
@@ -207,7 +207,7 @@ export const S8: React.FC<ShotProps> = ({ t }) => {
     <g transform={`${camT(1030, 560, kf(t, [[0, 1.08], [150, 1.2]]))} ${t > 10 && t < 30 ? shake(t, 10 + Math.floor((t - 10) / 7) * 7, 5, 4) : ''}`}>
       <SilDefs />
       <Study t={t + 300} id="s8" />
-      <WallShadow pose={me} dx={-130} dy={-70} s={1.1} o={0.5} />
+      <WallShadow pose={me} dx={-110} dy={-70} s={1.1} o={0.7} />
       <Hero look={PIP} pose={me} shadow={0.5} rimId="rimR" />
       <Hero look={LOOKS.suit} pose={suit} shadow={0.5} rimId="rimL" />
       <rect x={suit.x - 70} y={suit.y - 40} width={58} height={74} rx={6} fill="#E9E2D2" stroke="#3A3446" strokeWidth={5} transform={`rotate(-14 ${suit.x - 40} ${suit.y})`} />
@@ -224,10 +224,10 @@ const morningPose = (t: number): Pose => {
 export const S9: React.FC<ShotProps> = ({ t }) => {
   const me = { ...morningPose(t), ...faceAt(t, [[0, 'tired'], [50, 'neutral'], [66, 'shock']]), look: t > 50 ? -0.8 : 0 };
   return (
-    <g transform={camT(B9.x - 80, 520, kf(t, [[0, 1.2], [60, 1.25], [70, 1.45], [140, 1.55]], easeOut))}>
+    <g transform={camT(B9.x - 60, 520, kf(t, [[0, 1.2], [60, 1.25], [70, 1.45], [140, 1.55]], easeOut))}>
       <SilDefs />
       <Bedroom t={t + 400} id="s9" lamp={0.6} />
-      <WallShadow pose={morningPose(t + DELAY)} dx={-230} dy={-90} s={1.25} o={0.62} eyes={clamp((t - 64) / 12)} />
+      <WallShadow pose={morningPose(t + DELAY)} dx={-150} dy={-90} s={1.25} o={0.85} eyes={clamp((t - 64) / 12)} />
       <Hero look={PIP} pose={me} shadow={0.5} rimId="rimR" />
       <Glow x={B9.x - 230} y={360} r={360} kind="red" o={0.4 * clamp((t - 64) / 20)} />
     </g>
