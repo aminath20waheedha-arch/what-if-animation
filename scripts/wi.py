@@ -98,7 +98,11 @@ def api(path, body=None, timeout=180):
 
 def credits_used():
     """Characters/credits used so far this billing period (ElevenLabs' counter; it can lag by minutes)."""
-    s = json.loads(api('/v1/user/subscription'))
+    try:
+        s = json.loads(api('/v1/user/subscription'))
+    except Exception as e:  # a restricted key without user_read can still generate; the count is just unknown
+        print(f'(credits not readable with this key: {str(e)[:60]})')
+        return 0, 0
     return s['character_count'], s['character_limit']
 
 
@@ -107,7 +111,11 @@ def spent_since(t0, expect=1, tries=6):
     cost (the subscription counter lags). Waits a little for `expect` items to appear. Returns (credits, items)."""
     items = []
     for i in range(tries):
-        h = json.loads(api('/v1/history?page_size=100'))
+        try:
+            h = json.loads(api('/v1/history?page_size=100'))
+        except Exception as e:  # restricted key (no history read): cost unknown, report 0
+            print(f'(generation history not readable with this key: {str(e)[:60]})')
+            return 0, 0
         items = [it for it in h.get('history', []) if it.get('date_unix', 0) >= int(t0) - 2]
         if len(items) >= expect:
             break

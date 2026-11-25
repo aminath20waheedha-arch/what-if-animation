@@ -1,0 +1,459 @@
+{
+ "id": "Shadow",
+ "slug": "shadow",
+ "topic": "What if your shadow was always 3 seconds behind you?",
+ "title": [
+  "WHAT IF YOUR SHADOW",
+  "WAS 3 SECONDS LATE?"
+ ],
+ "voice": {
+  "id": "pNInz6obpgDQGcFmaJgB",
+  "model": "eleven_multilingual_v2",
+  "settings": {
+   "stability": 0.4,
+   "similarity_boost": 0.8,
+   "style": 0.35,
+   "use_speaker_boost": true,
+   "speed": 1.06
+  }
+ },
+ "script": [
+  {
+   "beat": "1 cold open: three demos of the delay",
+   "text": "You jump. You land. Then your shadow jumps. You trip on the stairs. You get back up. Your shadow is still falling. You wave at your crush. She waves back. Your shadow waves. Three seconds later."
+  },
+  {
+   "beat": "2 the premise (title card)",
+   "text": "What if your shadow was always three seconds behind you?"
+  },
+  {
+   "beat": "3 the fun part",
+   "text": "At first, it's the best party trick ever. You dance, and your shadow does the replay. Your friends lose it. You go viral."
+  },
+  {
+   "beat": "4 the fact",
+   "text": "Here's the thing. Shadows are already made of old light. Sunlight is eight minutes old when it hits you. That's real. Yours is just a little older."
+  },
+  {
+   "beat": "5 someone powerful notices",
+   "text": "Then a man in a suit knocks on your door. He wants to study it."
+  },
+  {
+   "beat": "6 the turn, the sister",
+   "text": "And one morning, it happens. Your shadow moves first. It reaches for your little sister. And you haven't moved at all."
+  },
+  {
+   "beat": "7 cliffhanger",
+   "text": "Part one. Would you follow your shadow, or run? Tell me in the comments."
+  }
+ ],
+ "science": [
+  {
+   "claim": "Sunlight is about 8 minutes old when it reaches you.",
+   "working": "Earth-Sun distance ~149.6 million km / speed of light 299,792 km/s = ~499 s = 8 min 19 s.",
+   "source": "NASA, 'How long does it take sunlight to reach Earth?'"
+  }
+ ],
+ "gaps": {
+  "word": 0.12,
+  "comma": 0.2,
+  "sentence": 0.3,
+  "question": 0.5,
+  "pairs": {
+   "land|Then": 0.9,
+   "up|Your": 0.6,
+   "waves|Three": 0.7,
+   "later|What": 0.5,
+   "behind|At": 0.5,
+   "viral|Here's": 0.9,
+   "older|Then": 1.0,
+   "it|And": 1.0,
+   "all|Part": 1.3,
+   "real|Yours": 0.6,
+   "happens|Your": 0.8,
+   "first|It": 0.7,
+   "sister|And": 0.7,
+   "one|Would": 0.6,
+   "run|Tell": 0.6
+  }
+ },
+ "cast": [
+  "pipHood",
+  "mo",
+  "sis",
+  "suit"
+ ],
+ "shots": [
+  {
+   "id": "S1",
+   "size": "wide",
+   "set": "rooftop",
+   "key": 12,
+   "note": "he jumps; the long shadow on the deck jumps 3 s later"
+  },
+  {
+   "id": "S2",
+   "size": "wide side-on",
+   "set": "stairwell",
+   "key": 24,
+   "note": "he trips and gets up; the wall shadow is still falling"
+  },
+  {
+   "id": "S3",
+   "size": "medium two-shot",
+   "set": "classroom",
+   "key": 30,
+   "note": "he waves, she waves back, his wall shadow waves late; she frowns"
+  },
+  {
+   "id": "S4",
+   "size": "title, wide",
+   "set": "rooftop",
+   "key": 40,
+   "note": "title card, sun low, the long shadow"
+  },
+  {
+   "id": "S5",
+   "size": "medium",
+   "set": "rooftop (party)",
+   "key": 60,
+   "note": "he dances, the shadow replays it, Mo films and laughs"
+  },
+  {
+   "id": "S6",
+   "size": "insert",
+   "set": "phone",
+   "key": 20,
+   "note": "the clip goes viral"
+  },
+  {
+   "id": "S7",
+   "size": "schematic",
+   "set": "schematic",
+   "key": 120,
+   "note": "sun to earth, 8 min 20 s, THAT'S REAL, +3 s"
+  },
+  {
+   "id": "S8",
+   "size": "wide",
+   "set": "study",
+   "key": 40,
+   "note": "the man in a suit at the door"
+  },
+  {
+   "id": "S9",
+   "size": "medium",
+   "set": "bedroom",
+   "key": 60,
+   "note": "he stands still; the wall shadow waves first"
+  },
+  {
+   "id": "S10",
+   "size": "medium",
+   "set": "kitchen",
+   "key": 70,
+   "note": "the shadow's hand reaches for sis; he hasn't moved"
+  },
+  {
+   "id": "S11",
+   "size": "close-up, red sky",
+   "set": "rooftop (red)",
+   "key": 60,
+   "note": "his shadow behind him with glowing eyes; PART 1"
+  }
+ ],
+ "edit": [
+  {
+   "shot": "S1",
+   "at": "f:0",
+   "look": "delay"
+  },
+  {
+   "shot": "S2",
+   "at": "trip",
+   "look": "delay"
+  },
+  {
+   "shot": "S3",
+   "at": "wave",
+   "look": "delay"
+  },
+  {
+   "shot": "S4",
+   "at": "What"
+  },
+  {
+   "shot": "S5",
+   "at": "At",
+   "look": "delay"
+  },
+  {
+   "shot": "S6",
+   "at": "You#2"
+  },
+  {
+   "shot": "S7",
+   "at": "Here's"
+  },
+  {
+   "shot": "S8",
+   "at": "Then"
+  },
+  {
+   "shot": "S9",
+   "at": "And"
+  },
+  {
+   "shot": "S10",
+   "at": "It#2"
+  },
+  {
+   "shot": "S11",
+   "at": "Part"
+  }
+ ],
+ "fx": [
+  {
+   "at": "S4",
+   "kind": "flash",
+   "color": "#FFF3DC"
+  },
+  {
+   "at": "S9+64",
+   "kind": "flash",
+   "color": "#FF3344"
+  },
+  {
+   "at": "S10+40",
+   "kind": "shake",
+   "len": 10,
+   "amp": 12
+  },
+  {
+   "at": "S11",
+   "kind": "flash",
+   "color": "#FF3344"
+  }
+ ],
+ "sound": {
+  "clips": {
+   "jump": [
+    "a cartoon character jumping, quick springy whoosh up",
+    0.6
+   ],
+   "land": [
+    "a heavy body landing on a concrete rooftop, cartoon thud",
+    0.6
+   ],
+   "shadow_swish": [
+    "a dark eerie whispery swish, like a shadow moving, short",
+    0.9
+   ],
+   "tumble": [
+    "a cartoon character tumbling down wooden stairs, a quick series of bumps and thuds",
+    1.3
+   ],
+   "dizzy": [
+    "cartoon dizzy birds tweeting in a circle after a bonk",
+    1.4
+   ],
+   "pop": [
+    "a cartoon speech bubble pop, short and bright",
+    0.5
+   ],
+   "title_boom": [
+    "a cinematic whoosh rising into a deep boom impact",
+    1.6
+   ],
+   "roof_wind": [
+    "gentle evening wind on a city rooftop, distant traffic, no voices",
+    6.0
+   ],
+   "crowd_cheer": [
+    "a small group of teenage friends laughing and cheering at a party, no music",
+    2.0
+   ],
+   "phone_ping": [
+    "a stream of rapid smartphone notification pings, social media likes",
+    1.6
+   ],
+   "laugh": [
+    "a small classroom of kids bursting out laughing",
+    1.6
+   ],
+   "knock": [
+    "three firm knocks on a wooden front door",
+    1.0
+   ],
+   "drone_hit": [
+    "a dark ominous low drone hit, deep cinematic horror sting",
+    2.6
+   ],
+   "creepy_whoosh": [
+    "a creepy reversed whoosh with a ghostly breath, horror",
+    1.4
+   ],
+   "gasp": [
+    "a teenage boy gasping in fear, short",
+    0.7
+   ],
+   "room_tone": [
+    "quiet indoor room tone, soft hum, no voices",
+    6.0
+   ],
+   "ding": [
+    "a correct answer ding, bright bell chime",
+    0.8
+   ]
+  },
+  "events": [
+   [
+    "S1",
+    "roof_wind",
+    0.12,
+    "onset",
+    "S2"
+   ],
+   [
+    "S1+6",
+    "jump",
+    0.45
+   ],
+   [
+    "S1+22",
+    "land",
+    0.55
+   ],
+   [
+    "S1+92",
+    "shadow_swish",
+    0.45
+   ],
+   [
+    "S2",
+    "room_tone",
+    0.1,
+    "onset",
+    "S4"
+   ],
+   [
+    "S2+14",
+    "tumble",
+    0.55
+   ],
+   [
+    "S2+34",
+    "dizzy",
+    0.2
+   ],
+   [
+    "S2+100",
+    "shadow_swish",
+    0.45
+   ],
+   [
+    "S3+30",
+    "pop",
+    0.3
+   ],
+   [
+    "S3+100",
+    "shadow_swish",
+    0.45
+   ],
+   [
+    "S3+108",
+    "laugh",
+    0.3
+   ],
+   [
+    "S4",
+    "title_boom",
+    0.4,
+    "peak"
+   ],
+   [
+    "S5",
+    "roof_wind",
+    0.1,
+    "onset",
+    "S6"
+   ],
+   [
+    "S5+40",
+    "crowd_cheer",
+    0.35
+   ],
+   [
+    "S5+96",
+    "shadow_swish",
+    0.35
+   ],
+   [
+    "S6+4",
+    "phone_ping",
+    0.4
+   ],
+   [
+    "S7+30",
+    "ding",
+    0.3
+   ],
+   [
+    "S8+10",
+    "knock",
+    0.6
+   ],
+   [
+    "S8",
+    "room_tone",
+    0.1,
+    "onset",
+    "S9"
+   ],
+   [
+    "S9",
+    "room_tone",
+    0.08,
+    "onset",
+    "S11"
+   ],
+   [
+    "S9+64",
+    "drone_hit",
+    0.35
+   ],
+   [
+    "S9+58",
+    "creepy_whoosh",
+    0.4
+   ],
+   [
+    "S10+38",
+    "creepy_whoosh",
+    0.45
+   ],
+   [
+    "S10+46",
+    "gasp",
+    0.35
+   ],
+   [
+    "S11",
+    "drone_hit",
+    0.35
+   ],
+   [
+    "S11",
+    "roof_wind",
+    0.1,
+    "onset"
+   ]
+  ],
+  "levels": {
+   "sfx_lu": -1.0,
+   "music_lu": -9.5
+  }
+ },
+ "tail": 2.2
+}

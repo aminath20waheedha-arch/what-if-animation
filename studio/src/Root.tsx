@@ -4,6 +4,7 @@ import './engine/fonts';
 import { STUDIO } from './studio.config';
 import { EPISODES } from './episodes';
 import { CastSheet } from './CastSheet';
+import { ShadowShort, SHADOW_SHORT_FRAMES } from './ShadowShort';
 
 // Every episode gets two compositions: <Id> (the film) and <Id>Board (one frame per shot, at its key frame, for the
 // storyboard). Cast renders the cast sheet.
@@ -20,6 +21,7 @@ export const Root: React.FC = () => {
         </React.Fragment>
       ))}
       <Composition id="Cast" component={CastSheet} durationInFrames={1} {...common} />
+      <Composition id="ShadowShort" component={ShadowShort} durationInFrames={SHADOW_SHORT_FRAMES} fps={STUDIO.fps} width={1080} height={1920} />
     </>
   );
 };

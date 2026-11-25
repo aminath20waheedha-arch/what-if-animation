@@ -1,0 +1,232 @@
+{
+ "slug": "shadow",
+ "title": "WHAT IF YOUR SHADOW WAS 3 SECONDS LATE?",
+ "fps": 30,
+ "total": 1684,
+ "segments": [
+  {
+   "shot": "S1",
+   "a": 0,
+   "b": 127,
+   "t0": 0,
+   "t1": 127,
+   "line": "You jump. You land. Then your shadow jumps. You",
+   "look": "delay"
+  },
+  {
+   "shot": "S2",
+   "a": 127,
+   "b": 256,
+   "t0": 0,
+   "t1": 129,
+   "line": "trip on the stairs. You get back up. Your shadow is still falling. You",
+   "look": "delay"
+  },
+  {
+   "shot": "S3",
+   "a": 256,
+   "b": 429,
+   "t0": 0,
+   "t1": 173,
+   "line": "wave at your crush. She waves back. Your shadow waves. Three seconds later.",
+   "look": "delay"
+  },
+  {
+   "shot": "S4",
+   "a": 429,
+   "b": 536,
+   "t0": 0,
+   "t1": 107,
+   "line": "What if your shadow was always three seconds behind you?"
+  },
+  {
+   "shot": "S5",
+   "a": 536,
+   "b": 748,
+   "t0": 0,
+   "t1": 212,
+   "line": "At first, it's the best party trick ever. You dance, and your shadow does the replay. Your friends lose it.",
+   "look": "delay"
+  },
+  {
+   "shot": "S6",
+   "a": 748,
+   "b": 784,
+   "t0": 0,
+   "t1": 36,
+   "line": "You go viral."
+  },
+  {
+   "shot": "S7",
+   "a": 784,
+   "b": 1071,
+   "t0": 0,
+   "t1": 287,
+   "line": "Here's the thing. Shadows are already made of old light. Sunlight is eight minutes old when it hits you. That's real. Yours is just a little older."
+  },
+  {
+   "shot": "S8",
+   "a": 1071,
+   "b": 1189,
+   "t0": 0,
+   "t1": 118,
+   "line": "Then a man in a suit knocks on your door. He wants to study it."
+  },
+  {
+   "shot": "S9",
+   "a": 1189,
+   "b": 1312,
+   "t0": 0,
+   "t1": 123,
+   "line": "And one morning, it happens. Your shadow moves first."
+  },
+  {
+   "shot": "S10",
+   "a": 1312,
+   "b": 1467,
+   "t0": 0,
+   "t1": 155,
+   "line": "It reaches for your little sister. And you haven't moved at all."
+  },
+  {
+   "shot": "S11",
+   "a": 1467,
+   "b": 1684,
+   "t0": 0,
+   "t1": 217,
+   "line": "Part one. Would you follow your shadow, or run? Tell me in the comments."
+  }
+ ],
+ "shots": [
+  {
+   "id": "S1",
+   "size": "wide",
+   "key": 12,
+   "len": 127,
+   "first": 0,
+   "line": "You jump. You land. Then your shadow jumps. You",
+   "note": "he jumps; the long shadow on the deck jumps 3 s later"
+  },
+  {
+   "id": "S2",
+   "size": "wide side-on",
+   "key": 24,
+   "len": 129,
+   "first": 127,
+   "line": "trip on the stairs. You get back up. Your shadow is still falling. You",
+   "note": "he trips and gets up; the wall shadow is still falling"
+  },
+  {
+   "id": "S3",
+   "size": "medium two-shot",
+   "key": 30,
+   "len": 173,
+   "first": 256,
+   "line": "wave at your crush. She waves back. Your shadow waves. Three seconds later.",
+   "note": "he waves, she waves back, his wall shadow waves late; she frowns"
+  },
+  {
+   "id": "S4",
+   "size": "title, wide",
+   "key": 40,
+   "len": 107,
+   "first": 429,
+   "line": "What if your shadow was always three seconds behind you?",
+   "note": "title card, sun low, the long shadow"
+  },
+  {
+   "id": "S5",
+   "size": "medium",
+   "key": 60,
+   "len": 212,
+   "first": 536,
+   "line": "At first, it's the best party trick ever. You dance, and your shadow does the replay. Your friends lose it.",
+   "note": "he dances, the shadow replays it, Mo films and laughs"
+  },
+  {
+   "id": "S6",
+   "size": "insert",
+   "key": 20,
+   "len": 36,
+   "first": 748,
+   "line": "You go viral.",
+   "note": "the clip goes viral"
+  },
+  {
+   "id": "S7",
+   "size": "schematic",
+   "key": 120,
+   "len": 287,
+   "first": 784,
+   "line": "Here's the thing. Shadows are already made of old light. Sunlight is eight minutes old when it hits you. That's real. Yours is just a little older.",
+   "note": "sun to earth, 8 min 20 s, THAT'S REAL, +3 s"
+  },
+  {
+   "id": "S8",
+   "size": "wide",
+   "key": 40,
+   "len": 118,
+   "first": 1071,
+   "line": "Then a man in a suit knocks on your door. He wants to study it.",
+   "note": "the man in a suit at the door"
+  },
+  {
+   "id": "S9",
+   "size": "medium",
+   "key": 60,
+   "len": 123,
+   "first": 1189,
+   "line": "And one morning, it happens. Your shadow moves first.",
+   "note": "he stands still; the wall shadow waves first"
+  },
+  {
+   "id": "S10",
+   "size": "medium",
+   "key": 70,
+   "len": 155,
+   "first": 1312,
+   "line": "It reaches for your little sister. And you haven't moved at all.",
+   "note": "the shadow's hand reaches for sis; he hasn't moved"
+  },
+  {
+   "id": "S11",
+   "size": "close-up, red sky",
+   "key": 60,
+   "len": 217,
+   "first": 1467,
+   "line": "Part one. Would you follow your shadow, or run? Tell me in the comments.",
+   "note": "his shadow behind him with glowing eyes; PART 1"
+  }
+ ],
+ "fx": [
+  {
+   "kind": "flash",
+   "color": "#FFF3DC",
+   "f": 429
+  },
+  {
+   "kind": "flash",
+   "color": "#FF3344",
+   "f": 1253
+  },
+  {
+   "kind": "shake",
+   "len": 10,
+   "amp": 12,
+   "f": 1352
+  },
+  {
+   "kind": "flash",
+   "color": "#FF3344",
+   "f": 1467
+  }
+ ],
+ "audio": {
+  "voice": "shadow/voice.wav",
+  "sfx": "shadow/sfx.wav",
+  "voiceVol": 0.6355,
+  "sfxVol": 0.8,
+  "music": "shadow/music.wav",
+  "musicVol": 0.6355
+ }
+}
