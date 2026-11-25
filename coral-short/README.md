@@ -29,7 +29,7 @@ python voice/tts.py && python audio/sound.py     # needs ffmpeg, numpy, scipy, e
 
 | Path | What |
 |---|---|
-| `src/coral/Captions.tsx` | word-synced captions, bottom middle (Montserrat Black, bundled under SIL OFL) |
+| `src/coral/Captions.tsx` | word-synced captions, bottom middle (Poppins ExtraBold, bundled under SIL OFL) |
 | `src/coral/plan.ts` | cue words → times (the single timing source) |
 | `src/coral/story.ts` | shots, eras of the set, cameras, kicks, depth of field |
 | `src/coral/world.ts` | lagoon, island, mosque in its stages, minaret, graves, town, palms, dhonis, reef |

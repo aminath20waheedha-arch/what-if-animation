@@ -3,9 +3,10 @@
     chisel strikes under water, footsteps on sand, mallet-on-chisel carving with coral chips, a drying time-lapse riser,
     the apprentice's CLANG + boing + dizzy birdies + the master's laugh, blocks thumping into the wall, glint chimes,
     city ambience, whooshes on camera moves, a pop and a ding on the call to action.
-  * Music: an original island groove in D (bodu beru style drums: deep "dum" and rim "tak", shaker, marimba riff,
-    plucked bass, warm pad), with stops on the comic beats and an underwater (low-passed) version for the reef.
-  * Mix: voice untouched, music ducked under speech and sitting ~11 LU under the voice, SFX ~9 LU under, master to
+  * Music: a quiet lo-fi hip-hop beat (92 bpm, kick/snare/hats, sub bass, island marimba + pad, vinyl crackle) that opens
+    on a kick + sub hit, drops on the surface burst, re-locks its downbeat to each cut, stops dead on the comic beats
+    (tape stop), goes under water (low-passed) with the camera, and ends on a button chord.
+  * Mix: voice untouched, music ducked under speech and sitting ~13.5 LU under the voice, SFX ~9 LU under, master to
     -14 LUFS integrated with a 4x-oversampled look-ahead limiter at -1 dBTP; exact picture length, 48 kHz stereo.
 Writes audio/out/mix.wav (+ stems) and audio/out/cues.md.
 """
@@ -397,62 +398,167 @@ def stinger(M, t, r, notes=(50, 45), gap=0.22, vel=0.8):
         place(M, st(dum(0.6, r)), t + i * gap)
 
 
+# ---- lo-fi kit ----
+def kick(vel=1.0, r=None):
+    r = r or rng(0)
+    d = 0.5
+    t = tt(d)
+    f = 48 + 110 * np.exp(-t / 0.035)
+    y = np.sin(phase(f)) * np.exp(-t / 0.22) + 0.6 * lp(r.standard_normal(len(t)), 3000) * np.exp(-t / 0.004)
+    return fades(np.tanh(1.6 * y) * vel, 0.0003, 0.05)
+
+
+def snare_lofi(vel=0.8, r=None):
+    r = r or rng(0)
+    d = 0.3
+    t = tt(d)
+    body = modal(d, [(190, 1.0, 0.06), (330, 0.5, 0.04)], r)
+    nz = bp(r.standard_normal(len(t)), 1500, 9000, 2) * np.exp(-t / 0.07)
+    clap = sum(bp(r.standard_normal(len(t)), 900, 4000, 2) * np.exp(-np.maximum(t - k * 0.009, 0) / 0.012) * (t >= k * 0.009) for k in range(3)) * 0.5
+    return fades(lp(body * 0.7 + nz + clap, 7000) * vel, 0.0003, 0.05)
+
+
+def hat(vel=0.4, r=None, open_=False):
+    r = r or rng(0)
+    d = 0.25 if open_ else 0.06
+    t = tt(d)
+    y = hp(r.standard_normal(len(t)), 7000, 2) * np.exp(-t / (0.08 if open_ else 0.015))
+    return y * vel
+
+
+def sub(f, dur, vel=0.8):
+    t = tt(dur)
+    y = np.sin(TAU * f * t) + 0.15 * np.sin(2 * TAU * f * t)
+    return fades(y * vel * np.minimum(1, t / 0.01) * np.exp(-t / (dur * 1.5)), 0.003, 0.06)
+
+
+def crackle(dur, r):
+    n = ns(dur)
+    y = np.zeros(n)
+    idx = r.integers(0, n, int(dur * 40))
+    y[idx] = r.uniform(-1, 1, len(idx))
+    return lp(hp(y, 1500), 9000) * 0.25 + lp(colored(n, r, 1.0), 400) * 0.02
+
+
+LBPM = 92
+LB = 60 / LBPM
+
+
+def beat(M, a, b, r, beat0=None, kind="full", vel=1.0):
+    """lo-fi hip-hop beat between a and b; downbeat locked to beat0 (default a = the cut)"""
+    b0 = a if beat0 is None else beat0
+    k = int(np.ceil((a - b0) / LB - 1e-6))
+    while True:
+        tb = b0 + k * LB
+        if tb >= b - 0.03:
+            break
+        bar, bt = divmod(k, 4)
+        ch = CHORDS[bar % 4]
+        sw = 0.11 * LB  # swing on the off-beat 8th
+        if kind in ("full", "half", "under"):
+            if bt == 0 or (kind == "full" and bt == 2 and bar % 2 == 0) or (kind != "half" and bt == 2 and bar % 2):
+                place(M, st(kick(0.95 * vel, r)), tb)
+            if kind == "full" and bt == 1 and bar % 2 == 1:
+                place(M, st(kick(0.6 * vel, r)), tb + LB / 2 + sw)
+            if (kind != "half" and bt in (1, 3)) or (kind == "half" and bt == 2):
+                place(M, pan(snare_lofi(0.75 * vel, r), 0.05), tb)
+            for q in range(2):
+                tq = tb + q * LB / 2 + (sw if q else 0)
+                if tq < b:
+                    place(M, pan(hat((0.32 if q else 0.22) * vel, r, open_=(kind == "full" and bt == 3 and q == 1)), 0.35), tq)
+        if kind in ("full", "half", "under", "light") and bt == 0:
+            place(M, st(sub(I.m2f(ROOT - 12 + ch), min(4 * LB, b - tb), 0.7 * vel)), tb)
+            fr_ = [I.m2f(ROOT + 12 + ch + x) for x in (TRIADS[ch][1], TRIADS[ch][2], 11 if TRIADS[ch][1] == 4 else 10)]
+            dur_ = min(4 * LB, b - tb)
+            if dur_ > 0.3:
+                place(M, lp(I.pad(fr_, dur_, 0.3 * vel, r, att=0.25, rel=0.5, warm=1500), 2500) * 0.45, tb)
+        if kind in ("full", "light") and bt in (0, 2):
+            for q, semi in enumerate((12, 16) if bt == 0 else (19, 14)):
+                tn = tb + q * LB * 0.75
+                if tn < b - 0.05:
+                    place(M, pan(marimba(I.m2f(ROOT + ch + semi), 0.4 * vel, r, 0.8), -0.3 + 0.6 * q), tn)
+        k += 1
+
+
+def roll(M, a, b, r, v0=0.25, v1=0.8):
+    n = int((b - a) / (LB / 4))
+    for i in range(n):
+        u = i / max(1, n - 1)
+        place(M, pan(snare_lofi(v0 + (v1 - v0) * u, r), 0.05), a + i * (LB / 4) * (1 - 0.35 * u))
+
+
+def tape_stop(M, t, r, dur=0.45):
+    """the beat slows to a halt (pitch-dropping thud + noise) on a comic stop"""
+    tt_ = tt(dur)
+    f = 90 * (1 - tt_ / dur) ** 2 + 20
+    y = np.sin(phase(f)) * (1 - tt_ / dur) + lp(r.standard_normal(len(tt_)), 600) * 0.2 * (1 - tt_ / dur)
+    place(M, st(fades(y, 0.002, 0.05)) * 0.6, t)
+
+
 def build_music():
     r = rng(11)
     M = buf()
     sh = Q.shot_t
     tb = C["built"]
-    # A: underwater intro, arpeggio + pad swelling to the burst
-    place(M, I.pad([I.m2f(x) for x in (50, 57, 64, 66)], tb + 0.2, 0.45, r, att=1.2, rel=0.4, warm=700) * 0.6, 0.0)
-    for k in range(int(tb / (BEAT / 2))):
-        place(M, pan(marimba(I.m2f([62, 66, 69, 73, 76, 73, 69, 66][k % 8]), 0.35 + 0.25 * k / (tb / (BEAT / 2)), r, 1.2), -0.3 + 0.6 * (k % 2)), k * BEAT / 2 + 0.05)
-    # B: the groove from the burst to "One problem."
-    place(M, st(dum(1.0, r)) + 0, tb)
-    place(M, I.cymbal(0.5, r, 2.4) * 0.35, tb)
-    groove(M, tb, C["problem"] - 0.05, r, {"drums", "shaker", "bass", "riff", "pad"}, 1.0, beat0=tb)
-    # C: the stop, then a tiptoe pluck pattern under the island facts and the palm
-    stinger(M, C["problem"] - 0.02, r, (50, 49), 0.25, 0.8)
-    groove(M, C["island"] - 0.1, C["builders"], r, {"bass", "arp"}, 0.55, beat0=tb)
-    # D: riser into the reef, then the underwater version (low-passed) of the groove
-    place(M, I.pad([I.m2f(x) for x in (57, 62, 66)], C["reef"] - C["builders"], 0.4, r, att=1.0, rel=0.2) * 0.5, C["builders"])
+    # A: the cold open: a punchy kick + sub hit on frame 0, then the beat under water (low-passed), riser into the burst
+    A = buf()
+    place(A, st(kick(1.0, r)), 0.0)
+    place(A, st(sub(I.m2f(ROOT - 12), 1.2, 0.9)), 0.0)
+    beat(A, 0.0, tb - 0.05, r, beat0=0.0, kind="under", vel=0.9)
+    M += lp(A, 900, 2) * 1.25
+    place(M, widen(riser(tb, r, 300, 6000), r) * 0.3, 0.0)
+    # B: the drop on the surface burst (white flash): crash + kick, full beat until "One problem."
+    place(M, I.cymbal(0.55, r, 2.4) * 0.35, tb)
+    beat(M, tb, C["problem"] - 0.05, r, beat0=tb, kind="full")
+    # C: hard stop on "One problem.", then a light half-time beat under the island facts and the palm
+    tape_stop(M, C["problem"] - 0.05, r)
+    beat(M, C["island"] - 0.03, C["builders"] - 0.05, r, beat0=C["island"] - 0.03, kind="half", vel=0.8)
+    # D: snare roll building to "at the reef", then the beat goes under water with the camera
+    beat(M, C["builders"] - 0.03, C["down"] - 0.05, r, beat0=C["builders"] - 0.03, kind="light", vel=0.8)
+    roll(M, C["down"], C["reef"] - 0.05, r)
     U = buf()
-    groove(U, sh(7)[0], sh(7)[1], r, {"drums", "bass", "arp", "pad"}, 0.85, beat0=tb)
+    beat(U, sh(7)[0], sh(7)[1], r, beat0=sh(7)[0], kind="under")
     M += lp(U, 650, 2) * 1.3
-    # E: the groove returns on the beach and under the carving; the drying shot adds a shimmer
-    groove(M, sh(8)[0], C["tooHard"] - 0.1, r, {"drums", "shaker", "bass", "riff", "pad"}, 0.95, beat0=tb)
+    # E: the beat drops back in on the beach and carries the carving; hats double up while the blocks dry
+    beat(M, sh(8)[0], C["tooHard"] - 0.08, r, beat0=sh(8)[0], kind="full")
     a, b = sh(10)
-    for k in range(int((b - a) / (BEAT / 4))):
-        place(M, pan(I.glock(I.m2f([86, 90, 93, 98][k % 4]), 0.25, r, 1.0), (k % 2) - 0.5) * 0.4, a + k * BEAT / 4)
-    # F: dead stop on the strike, a "wah-wah" after "found out"
+    for k in range(int((b - a) / (LB / 4))):
+        place(M, pan(hat(0.22, r), -0.4), a + k * LB / 4)
+    place(M, widen(riser(b - a, r, 500, 7000), r) * 0.2, a)
+    # F: dead stop on the strike, a sad "wah-wah" after "found out"
+    tape_stop(M, Q.BONK - 0.02, r, 0.3)
     place(M, pan(I.brass(I.m2f(46), 0.35, 0.6, r, "soft"), 0) * 0.5, C["apprentice"] + 0.55)
     place(M, pan(I.brass(I.m2f(45), 0.6, 0.6, r, "soft", fall=-1.0), 0) * 0.5, C["apprentice"] + 0.95)
-    # G: energetic groove under the wall
-    groove(M, C["blockBy"] - 0.05, C["graves"] - 0.1, r, {"drums", "shaker", "bass", "riff", "arp", "pad"}, 1.05, beat0=C["blockBy"] - 0.05)
-    # H: graves: soft pad + music box line
+    # G: the beat slams back on "Block by block"
+    place(M, I.cymbal(0.45, r, 2.0) * 0.3, C["blockBy"])
+    beat(M, C["blockBy"] - 0.02, C["graves"] - 0.08, r, beat0=C["blockBy"] - 0.02, kind="full", vel=1.05)
+    # H: graves: no drums, pad + music box
     a, b = sh(13)
     place(M, I.pad([I.m2f(x) for x in (50, 57, 62, 66)], b - a, 0.35, r, att=0.8, rel=0.8) * 0.5, a)
     for k, m in enumerate([74, 76, 78, 81, 78, 76, 74, 73, 71, 74]):
-        tn = a + 0.2 + k * BEAT * 0.75
+        tn = a + 0.2 + k * LB * 0.75
         if tn < b:
             place(M, pan(I.musicbox(I.m2f(m), 0.5, r, 1.6), 0.2) * 0.5, tn)
-    # I: the minaret and today: broad and warm, slow drums, riff an octave up
-    a = C["seventeen"] - 0.05
-    groove(M, a, C["cta"] - 0.1, r, {"drums", "bass", "pad", "arp"}, 0.85, beat0=a)
+    # I: the minaret and today: half-time, warm, vibes melody on the crane up
+    a = C["seventeen"] - 0.03
+    beat(M, a, C["today"] - 0.05, r, beat0=a, kind="half", vel=0.9)
     for k, m in enumerate([74, 78, 81, 86, 85, 81, 83, 78]):
-        tn = C["minaret"] - 0.4 + k * BEAT
-        place(M, pan(I.vibes(I.m2f(m), 0.5, r, 1.8), 0.25) * 0.6, tn)
+        place(M, pan(I.vibes(I.m2f(m), 0.5, r, 1.8), 0.25) * 0.55, C["minaret"] - 0.4 + k * LB)
     place(M, I.cymbal(0.4, r, 2.4) * 0.3, C["today"] - 0.05)
-    # J: call to action: light groove, button chord at the end
+    beat(M, C["today"] - 0.05, C["cta"] - 0.08, r, beat0=C["today"] - 0.05, kind="full", vel=0.95)
+    # J: the question: light beat, button on the last word
     a = C["cta"] - 0.05
     end = Q.DUR - 0.9
-    groove(M, a, end, r, {"shaker", "bass", "riff"}, 0.8, beat0=a)
+    beat(M, a, end, r, beat0=a, kind="light", vel=0.85)
+    place(M, st(kick(1.0, r)), end)
     for m in (50, 57, 62, 66, 69):
         place(M, marimba(I.m2f(m), 0.7, r, 1.4), end)
-    place(M, st(dum(1.0, r)), end)
     place(M, I.pad([I.m2f(x) for x in (50, 57, 66)], 0.6, 0.4, r, att=0.05, rel=0.6) * 0.5, end)
-    # room
-    ir = make_ir(1.1, 3, pre=0.01, hf=1.6)
-    M = M + convolve_st(M, ir) * 0.18
+    # lo-fi glue: vinyl crackle, gentle top roll-off, small room
+    M += st(crackle(Q.DUR, r)) * 0.5
+    M = lp(M, 9000, 1)
+    ir = make_ir(0.9, 3, pre=0.01, hf=1.6)
+    M = M + convolve_st(M, ir) * 0.14
     return M
 
 
@@ -517,8 +623,8 @@ def main():
     log("music ...")
     M = build_music()
     # levels relative to the voice (integrated), music ducked under speech
-    M *= dbg(Lv - 11.0 - integrated(M))
-    M *= duck_curve()[None, :]
+    M *= dbg(Lv - 13.5 - integrated(M))
+    M *= duck_curve(-5.0)[None, :]
     S *= dbg(Lv - 9.5 - integrated(S))
     mix = V + M + S
     g = dbg(TARGET - integrated(mix))

@@ -6,11 +6,13 @@ import { AbsoluteFill, continueRender, delayRender, spring, staticFile, useCurre
 import WORDS from "./words.json";
 import { FPS } from "./plan";
 
-// Montserrat Black, bundled (public/fonts, SIL OFL) so renders never depend on a font CDN
+// Poppins ExtraBold (the everyday Shorts / TikTok subtitle face), bundled (public/fonts, SIL OFL) so renders never depend on a font CDN
 const fontFamily = "CoralCaption";
-if (typeof document !== "undefined" && !document.fonts.check(`900 20px ${fontFamily}`)) {
+// (document.fonts.check() is true for a family it has never seen, so load unconditionally, once per page)
+if (typeof document !== "undefined" && !(window as unknown as { __coralFont?: boolean }).__coralFont) {
+  (window as unknown as { __coralFont?: boolean }).__coralFont = true;
   const h = delayRender("caption font");
-  const face = new FontFace(fontFamily, `url(${staticFile("fonts/Montserrat-Black.woff2")}) format("woff2")`, { weight: "900" });
+  const face = new FontFace(fontFamily, `url(${staticFile("fonts/Poppins-ExtraBold.woff2")}) format("woff2")`, { weight: "800" });
   face.load().then((ff) => { (document.fonts as unknown as { add: (f: FontFace) => void }).add(ff); continueRender(h); }).catch((e) => { console.error(e); continueRender(h); });
 }
 
@@ -68,8 +70,7 @@ export const Captions: React.FC = () => {
   return (
     <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: 380, pointerEvents: "none" }}>
       <div style={{
-        maxWidth: 940, display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: 26, rowGap: 4, fontFamily, fontWeight: 900, fontSize: 82, lineHeight: 1.12, letterSpacing: 1,
-        textTransform: "uppercase", transform: `scale(${0.82 + 0.18 * pop}) translateY(${(1 - pop) * 22}px)`, opacity: Math.min(1, pop * 1.6),
+        maxWidth: 940, display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: 20, rowGap: 4, fontFamily, fontWeight: 800, fontSize: 76, lineHeight: 1.15, letterSpacing: 0, transform: `scale(${0.82 + 0.18 * pop}) translateY(${(1 - pop) * 22}px)`, opacity: Math.min(1, pop * 1.6),
       }}>
         {p.words.map((w, i) => {
           const cur = p.words.reduce((k, x, j) => (t >= x.s - lead ? j : k), -1);
@@ -77,8 +78,8 @@ export const Captions: React.FC = () => {
           return (
             <span key={i} style={{
               color: on ? "#ffe14d" : "#ffffff",
-              WebkitTextStroke: "14px #120c14", paintOrder: "stroke fill",
-              textShadow: "0 8px 0 rgba(18,12,20,0.55)",
+              WebkitTextStroke: "10px #000000", paintOrder: "stroke fill", strokeLinejoin: "round",
+              textShadow: "0 5px 14px rgba(0,0,0,0.55)",
               display: "inline-block", transform: on ? "scale(1.08)" : "none",
             }}>{w.text}</span>
           );
