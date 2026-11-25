@@ -160,7 +160,7 @@ export const S5: React.FC<ShotProps> = ({ t }) => {
       <Hero look={PIP} pose={me} shadow={0.4} rimId="rimR" />
       <Hero look={LOOKS.mo} pose={mo} shadow={0.4} rimId="rimL" />
       <Phone x={1178} y={600} w={70} rot={-12} on={1} caller="REC" f={t} />
-      {t > 40 ? <FloatLabel x={1250} y={420} t={t - 40} text="HAHA" size={52} /> : null}
+      {t > 40 ? <FloatLabel x={1150} y={420} t={t - 40} text="HAHA" size={52} /> : null}
     </g>
   );
 };
@@ -179,20 +179,20 @@ export const S6: React.FC<ShotProps> = ({ t }) => (
 
 // ---------- S7: the science: sunlight is 8 minutes old; yours is 3 s older ----------
 export const S7: React.FC<ShotProps> = ({ t }) => {
-  const sun = 'M 560 430 m -90 0 a 90 90 0 1 0 180 0 a 90 90 0 1 0 -180 0';
-  const earth = 'M 1360 430 m -60 0 a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0';
+  const sun = 'M 720 430 m -70 0 a 70 70 0 1 0 140 0 a 70 70 0 1 0 -140 0';
+  const earth = 'M 1200 430 m -50 0 a 50 50 0 1 0 100 0 a 50 50 0 1 0 -100 0';
   return (
     <g transform={camT(960, 520, kf(t, [[0, 1.0], [260, 1.08]]))}>
       <Schematic t={t} id="s7" />
       <DrawOn d={sun} t={t} dur={14} color="#FFB347" width={7} />
       {t > 8 ? <DrawOn d={earth} t={t - 8} dur={12} color="#7FD1FF" width={7} /> : null}
-      {t > 16 ? <Arrow x0={660} y0={430} x1={1290} y1={430} t={t - 16} dur={20} color="#FFE7B3" bend={0} /> : null}
-      <SchLabel x={560} y={570} t={t - 6} text="SUN" />
-      <SchLabel x={1360} y={530} t={t - 14} text="YOU" />
-      {t > 118 ? <CountUp x={960} y={330} t={t - 118} to={8.33} dur={34} size={84} format={(v) => `${Math.floor(v)} MIN ${String(Math.round((v % 1) * 60)).padStart(2, '0')} S`} /> : null}
-      <SchLabel x={960} y={250} t={t - 118} text="SUNLIGHT IS THIS OLD WHEN IT HITS YOU" size={30} />
+      {t > 16 ? <Arrow x0={800} y0={430} x1={1140} y1={430} t={t - 16} dur={20} color="#FFE7B3" bend={0} /> : null}
+      <SchLabel x={720} y={550} t={t - 6} text="SUN" />
+      <SchLabel x={1200} y={530} t={t - 14} text="YOU" />
+      {t > 118 ? <CountUp x={960} y={330} t={t - 118} to={8.33} dur={34} size={64} format={(v) => `${Math.floor(v)} MIN ${String(Math.round((v % 1) * 60)).padStart(2, '0')} S`} /> : null}
+      <SchLabel x={960} y={250} t={t - 118} text="SUNLIGHT IS THIS OLD" size={30} />
       {t > 194 ? <SchLabel x={960} y={700} t={t - 194} text="THAT'S REAL." size={64} color="#FFB347" /> : null}
-      {t > 216 ? <SchLabel x={960} y={800} t={t - 216} text="YOUR SHADOW: + 3 S" size={52} color="#FF5A6A" /> : null}
+      {t > 216 ? <SchLabel x={960} y={800} t={t - 216} text="YOUR SHADOW: +3 S" size={44} color="#FF5A6A" /> : null}
     </g>
   );
 };

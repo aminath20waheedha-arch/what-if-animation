@@ -12,8 +12,8 @@ const delayLook: LookDef = {
     const p = (f % 90) / 90;
     return (
       <g>
-        <HudChip x={580} y={110} f={f} label="SHADOW -3.0s" icon="dot" />
-        <Dial x={1330} y={150} r={64} size={32} p={p} readout={`-${(3 * (1 - p)).toFixed(1)}s`} />
+        <HudChip x={680} y={210} f={f} label="SHADOW -3.0s" icon="dot" />
+        <Dial x={1220} y={240} r={52} size={32} p={p} readout={`-${(3 * (1 - p)).toFixed(1)}s`} />
       </g>
     );
   },

@@ -8,7 +8,7 @@ on:
   push:
     paths:
       - "studio/src/episodes/slowtime/**"
-      - "studio/src/SlowTimeShort.tsx"
+      - "studio/src/ShadowShort.tsx"
       - "studio/public/slowtime/**"
       - ".github/workflows/slowtime-short.yml"
 

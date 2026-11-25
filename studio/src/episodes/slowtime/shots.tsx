@@ -95,7 +95,7 @@ export const S5: React.FC<ShotProps> = ({ t }) => {
       <FastClock x={1200} y={330} t={t} speed={4} />
       <Hero look={PIP} pose={me} shadow={0.4} rimId="rimR" />
       <Phone x={985} y={560} w={60} rot={-10} on={1} caller="♪ SONG 1/1" f={t} />
-      {t > 30 ? <FloatLabel x={1130} y={480} t={t - 30} text="3 HRS → 18 MIN" size={50} /> : null}
+      {t > 30 ? <FloatLabel x={1000} y={430} t={t - 30} text="3 HRS → 18 MIN" size={44} /> : null}
     </g>
   );
 };
@@ -120,13 +120,13 @@ export const S7: React.FC<ShotProps> = ({ t }) => {
   const me: Pose = { ...basePose, x: 1210, y: 700, yaw: -0.4, facing: -1, armL: { a: t > 80 ? 120 : 15, b: -10 }, handL: 'point', ...faceAt(t, [[0, 'happy'], [263, 'worried'], [321, 'smug']]), look: -0.7 };
   const board = (
     <g>
-      {t > 80 ? <text x={740} y={280} textAnchor="middle" fontFamily={FONT.hand} fontSize={86} fill="#F4F1EA" opacity={clamp((t - 80) / 8)}>1905</text> : null}
+      {t > 80 ? <text x={840} y={280} textAnchor="middle" fontFamily={FONT.hand} fontSize={86} fill="#F4F1EA" opacity={clamp((t - 80) / 8)}>1905</text> : null}
       {t > 170 ? <>
-        <FastClock x={560} y={420} r={52} t={t} speed={0.15} />
-        <text x={560} y={510} textAnchor="middle" fontFamily={FONT.hand} fontSize={34} fill="#F4F1EA">FAST</text>
+        <FastClock x={700} y={420} r={52} t={t} speed={0.15} />
+        <text x={700} y={510} textAnchor="middle" fontFamily={FONT.hand} fontSize={34} fill="#F4F1EA">FAST</text>
         <FastClock x={920} y={420} r={52} t={t} speed={1.2} />
         <text x={920} y={510} textAnchor="middle" fontFamily={FONT.hand} fontSize={34} fill="#F4F1EA">STILL</text>
-        <DrawOn d="M 470 330 L 650 330" t={t - 170} dur={10} color="#FFD27A" width={6} />
+        <DrawOn d="M 640 330 L 760 330" t={t - 170} dur={10} color="#FFD27A" width={6} />
       </> : null}
       {t > 263 ? <text x={1000} y={280} textAnchor="middle" fontFamily={FONT.hand} fontSize={80} fill="#FF8A7A" opacity={clamp((t - 263) / 6)}>?</text> : null}
     </g>
@@ -153,10 +153,10 @@ export const S8: React.FC<ShotProps> = ({ t }) => {
         <path d="M 0 -34 L 8 -6 L 34 6 L 34 14 L 8 8 L 6 26 L 14 32 L 14 38 L 0 34 L -14 38 L -14 32 L -6 26 L -8 8 L -34 14 L -34 6 L -8 -6 Z" fill="#F4EEE2" stroke="#1A1220" strokeWidth={3} />
       </g>
       <FastClock x={px + 46} y={py - 40} r={20} t={t} speed={0.5} />
-      <SchLabel x={960} y={230} t={t - 4} text="1971 · ATOMIC CLOCKS ON PASSENGER PLANES" size={30} />
-      {t > 165 ? <SchLabel x={960} y={810} t={t - 165} text="LANDED: CLOCKS DISAGREE" size={40} color="#FFB347" /> : null}
-      {t > 226 ? <SchLabel x={960} y={880} t={t - 226} text="BY BILLIONTHS OF A SECOND" size={40} color="#FFB347" /> : null}
-      {t > 281 ? <SchLabel x={960} y={960} t={t - 281} text="EINSTEIN WAS RIGHT ✓" size={52} color="#7CFFB2" /> : null}
+      <SchLabel x={960} y={230} t={t - 4} text="1971 · ATOMIC CLOCKS ON PLANES" size={26} />
+      {t > 165 ? <SchLabel x={960} y={810} t={t - 165} text="CLOCKS DISAGREE" size={40} color="#FFB347" /> : null}
+      {t > 226 ? <SchLabel x={960} y={880} t={t - 226} text="BY BILLIONTHS OF A SEC" size={34} color="#FFB347" /> : null}
+      {t > 281 ? <SchLabel x={960} y={960} t={t - 281} text="EINSTEIN WAS RIGHT ✓" size={40} color="#7CFFB2" /> : null}
     </g>
   );
 };
@@ -176,12 +176,12 @@ export const S9: React.FC<ShotProps> = ({ t }) => {
         <rect x={20} y={-8} width={38} height={16} fill="#5F9FD8" stroke="#1A1220" strokeWidth={3} />
       </g>
       <SchLabel x={960} y={250} t={t - 80} text="GPS SATELLITE CLOCKS" size={34} />
-      {t > 130 ? <CountUp x={960} y={350} t={t - 130} to={38} dur={30} size={84} color="#FFB347" format={(v) => `+${Math.round(v)} µs / DAY`} /> : null}
+      {t > 130 ? <CountUp x={960} y={350} t={t - 130} to={38} dur={30} size={64} color="#FFB347" format={(v) => `+${Math.round(v)} µs / DAY`} /> : null}
       {t > 196 ? <SchLabel x={960} y={430} t={t - 196} text="THAT'S REAL." size={44} color="#7CFFB2" /> : null}
       {t > 296 ? <>
         <circle cx={960} cy={470} r={14} fill="#7CFFB2" />
         <path d={`M ${960 + drift} 456 q -16 -28 0 -40 q 16 12 0 40 Z`} fill="#FF5A6A" stroke="#1A1220" strokeWidth={3} />
-        <SchLabel x={960} y={900} t={t - 300} text="OFF BY 10 KM EVERY DAY" size={46} color="#FF5A6A" />
+        <SchLabel x={960} y={900} t={t - 300} text="OFF BY 10 KM A DAY" size={42} color="#FF5A6A" />
       </> : null}
     </g>
   );
@@ -189,18 +189,18 @@ export const S9: React.FC<ShotProps> = ({ t }) => {
 
 // ---------- S10: the twins: a year in space, about 5 ms younger ----------
 export const S10: React.FC<ShotProps> = ({ t }) => {
-  const earthTwin: Pose = { ...basePose, x: 760, y: 640, scale: 0.85, yaw: 0.3, ...faceAt(t, [[0, 'happy'], [197, 'smug']]) };
-  const spaceTwin: Pose = { ...basePose, x: 1160, y: 560 + Math.sin(t / 14) * 14, scale: 0.85, yaw: -0.3, spin: Math.sin(t / 30) * 8, armL: { a: 70, b: 0 }, armR: { a: 70, b: 0 },
+  const earthTwin: Pose = { ...basePose, x: 790, y: 640, scale: 0.85, yaw: 0.3, ...faceAt(t, [[0, 'happy'], [197, 'smug']]) };
+  const spaceTwin: Pose = { ...basePose, x: 1130, y: 560 + Math.sin(t / 14) * 14, scale: 0.85, yaw: -0.3, spin: Math.sin(t / 30) * 8, armL: { a: 70, b: 0 }, armR: { a: 70, b: 0 },
     ...faceAt(t, [[0, 'happy'], [141, 'cool']]) };
   return (
     <g transform={camT(960, 520, kf(t, [[0, 1.0], [230, 1.08]]))}>
       <Schematic t={t} id="s10" />
-      <SchLabel x={760} y={300} t={t - 10} text="EARTH" size={34} />
-      <SchLabel x={1160} y={300} t={t - 30} text="1 YEAR IN SPACE" size={34} />
+      <SchLabel x={790} y={300} t={t - 10} text="EARTH" size={30} />
+      <SchLabel x={1130} y={300} t={t - 30} text="1 YR IN SPACE" size={30} />
       <Hero look={LOOKS.mo} pose={earthTwin} shadow={0} rimId="rimR" />
       <Hero look={LOOKS.mo} pose={spaceTwin} shadow={0} rimId="rimL" />
-      <circle cx={1160} cy={spaceTwin.y - 150} r={78} fill="#BFE6FF" opacity={0.18} stroke="#BFE6FF" strokeWidth={4} />
-      {t > 141 ? <CountUp x={1160} y={880} t={t - 141} to={5} dur={20} size={72} color="#FFB347" format={(v) => `−${Math.round(v)} MS YOUNGER`} /> : null}
+      <circle cx={1130} cy={spaceTwin.y - 150} r={78} fill="#BFE6FF" opacity={0.18} stroke="#BFE6FF" strokeWidth={4} />
+      {t > 141 ? <CountUp x={960} y={880} t={t - 141} to={5} dur={20} size={52} color="#FFB347" format={(v) => `−${Math.round(v)} MS YOUNGER`} /> : null}
     </g>
   );
 };
@@ -252,7 +252,7 @@ export const S13: React.FC<ShotProps> = ({ t }) => {
       <Hero look={PIP} pose={me} shadow={0} rimId="rimR" />
       <Hero look={LOOKS.sis} pose={sis} shadow={0} rimId="rimL" />
       {t > 30 ? <FocusRings x={P13.x} y={P13.y - 190 * P13.scale} t={t - 30} r0={50} /> : null}
-      {t > 80 ? <FloatLabel x={S13p.x} y={S13p.y - 330 * P13.scale} t={t - 80} text="+10 YEARS" size={60} color="#FF5A6A" /> : null}
+      {t > 80 ? <FloatLabel x={(P13.x + S13p.x) / 2 + 40} y={S13p.y - 330 * P13.scale} t={t - 80} text="+10 YEARS" size={52} color="#FF5A6A" /> : null}
     </g>
   );
 };

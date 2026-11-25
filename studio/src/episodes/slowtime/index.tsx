@@ -12,8 +12,8 @@ const timeLook: LookDef = {
     const p = (f % 20) / 20;
     return (
       <g>
-        <HudChip x={580} y={110} f={f} label="TIME x0.1" icon="skip" />
-        <Dial x={1330} y={150} r={64} size={30} p={p} readout={`x10`} />
+        <HudChip x={680} y={210} f={f} label="TIME x0.1" icon="skip" />
+        <Dial x={1220} y={240} r={52} size={30} p={p} readout={`x10`} />
       </g>
     );
   },
