@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.focuscredit.app.reminders.Notifications
-import com.focuscredit.app.ui.ScheduleApp
+import com.focuscredit.app.ui.AppRoot
 import com.focuscredit.app.ui.theme.FocusCreditTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         Notifications.ensureChannel(this)
         setContent {
             FocusCreditTheme {
-                ScheduleApp()
+                AppRoot()
             }
         }
     }
