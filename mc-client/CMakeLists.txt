@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.16)
+project(mcclient CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_library(mccore core/registry.cpp)
+add_executable(test_core tests/test_core.cpp)
+target_link_libraries(test_core mccore)
+enable_testing()
+add_test(NAME core COMMAND test_core)
