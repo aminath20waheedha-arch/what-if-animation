@@ -42,6 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.focuscredit.app.credit.CreditKind
+import com.focuscredit.app.credit.CreditOutcome
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -181,6 +183,8 @@ private fun Finished(s: QuizState.Finished, onDone: () -> Unit) {
             style = MaterialTheme.typography.bodyLarge,
         )
 
+        s.credit?.let { CreditLine(it) }
+
         if (s.missed.isNotEmpty()) {
             Text(
                 "To review",
@@ -198,5 +202,31 @@ private fun Finished(s: QuizState.Finished, onDone: () -> Unit) {
         }
 
         Button(onClick = onDone, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) { Text("Done") }
+    }
+}
+
+@Composable
+private fun CreditLine(outcome: CreditOutcome) {
+    val (text, good) = when (outcome) {
+        is CreditOutcome.Applied ->
+            "${if (outcome.amount > 0) "+" else ""}${outcome.amount} credit · now ${outcome.newBalance}" to (outcome.amount > 0)
+        CreditOutcome.Practice -> "Practice quiz: credit doesn't change" to true
+        is CreditOutcome.AlreadyCounted -> when (outcome.existing) {
+            CreditKind.MISSED -> "Too late: this session was already counted as missed" to false
+            else -> "This session's quiz was already counted" to true
+        }
+    }
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (good) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text,
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+        )
     }
 }

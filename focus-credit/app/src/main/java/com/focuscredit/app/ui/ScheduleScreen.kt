@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.focuscredit.app.data.Task
@@ -58,6 +59,13 @@ fun ScheduleApp(vm: ScheduleViewModel = viewModel()) {
     val selectedDate by vm.selectedDate.collectAsStateWithLifecycle()
     val tasks by vm.tasksForDay.collectAsStateWithLifecycle()
     val subjects by vm.knownSubjects.collectAsStateWithLifecycle()
+    val balance by vm.balance.collectAsStateWithLifecycle()
+    val history by vm.creditHistory.collectAsStateWithLifecycle()
+
+    LifecycleResumeEffect(Unit) {
+        vm.syncCredit()
+        onPauseOrDispose { }
+    }
 
     // null = schedule visible; non-null = editing that task (id 0 means a new one)
     var editing by remember { mutableStateOf<Task?>(null) }
@@ -81,6 +89,7 @@ fun ScheduleApp(vm: ScheduleViewModel = viewModel()) {
             onEdit = { editing = it },
             onDelete = vm::delete,
             onExactAlarmsGranted = vm::rescheduleReminders,
+            header = { CreditCard(balance, history) },
         )
     }
 }
@@ -95,6 +104,7 @@ fun ScheduleScreen(
     onEdit: (Task) -> Unit,
     onDelete: (Task) -> Unit,
     onExactAlarmsGranted: () -> Unit = {},
+    header: @Composable () -> Unit = {},
 ) {
     var pendingDelete by remember { mutableStateOf<Task?>(null) }
 
@@ -109,6 +119,7 @@ fun ScheduleScreen(
         },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
+            header()
             ReminderPermissionBanner(onExactAlarmsGranted)
             WeekStrip(selectedDate, onSelectDate)
             Text(

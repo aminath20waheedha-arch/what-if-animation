@@ -3,6 +3,7 @@ package com.focuscredit.app.reminders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.focuscredit.app.credit.CreditRepository
 import com.focuscredit.app.data.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,8 @@ class ReminderReceiver : BroadcastReceiver() {
                 Notifications.showReminder(app, task, type)
                 // Small buffer so we never re-book the alarm that just fired.
                 ReminderScheduler.scheduleOne(app, task, type, LocalDateTime.now().plusSeconds(30))
+                // Good moment to record any sessions that were skipped earlier.
+                CreditRepository(app).sync()
             } finally {
                 pending.finish()
             }

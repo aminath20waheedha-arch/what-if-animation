@@ -3,6 +3,8 @@ package com.focuscredit.app.quiz
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.focuscredit.app.credit.CreditOutcome
+import com.focuscredit.app.credit.CreditRepository
 import com.focuscredit.app.data.AppDatabase
 import com.focuscredit.app.data.Flashcard
 import com.focuscredit.app.data.QuizResult
@@ -20,11 +22,19 @@ sealed interface QuizState {
         val typed: String,
         val revealed: Boolean,
     ) : QuizState
-    data class Finished(val correct: Int, val total: Int, val passed: Boolean, val missed: List<Flashcard>) : QuizState
+    data class Finished(
+        val correct: Int,
+        val total: Int,
+        val passed: Boolean,
+        val missed: List<Flashcard>,
+        /** null while the credit change is being worked out. */
+        val credit: CreditOutcome? = null,
+    ) : QuizState
 }
 
 class QuizViewModel(app: Application) : AndroidViewModel(app) {
     private val db = AppDatabase.get(app)
+    private val creditRepo = CreditRepository(app)
 
     private val _state = MutableStateFlow<QuizState>(QuizState.Loading)
     val state: StateFlow<QuizState> = _state
@@ -74,19 +84,20 @@ class QuizViewModel(app: Application) : AndroidViewModel(app) {
         val total = cards.size
         val passed = QuizRules.passed(correct, total)
         val missed = cards.filterIndexed { i, _ -> !marks[i] }
-        _state.value = QuizState.Finished(correct, total, passed, missed)
+        val finished = QuizState.Finished(correct, total, passed, missed)
+        _state.value = finished
         viewModelScope.launch {
-            db.quizResultDao().insert(
-                QuizResult(
-                    subject = req.subject,
-                    taskId = req.taskId,
-                    dateEpochDay = req.dateEpochDay,
-                    correct = correct,
-                    total = total,
-                    passed = passed,
-                    finishedAtMillis = System.currentTimeMillis(),
-                )
+            val result = QuizResult(
+                subject = req.subject,
+                taskId = req.taskId,
+                dateEpochDay = req.dateEpochDay,
+                correct = correct,
+                total = total,
+                passed = passed,
+                finishedAtMillis = System.currentTimeMillis(),
             )
+            db.quizResultDao().insert(result)
+            _state.value = finished.copy(credit = creditRepo.recordQuiz(result))
         }
     }
 }

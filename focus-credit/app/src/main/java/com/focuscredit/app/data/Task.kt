@@ -1,5 +1,6 @@
 package com.focuscredit.app.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.DayOfWeek
@@ -27,6 +28,8 @@ data class Task(
     val endMinute: Int,
     val repeatDays: Int,
     val dateEpochDay: Long?,
+    /** When the task was created; sessions that ended before this never count as missed. 0 = unknown (pre-v4). */
+    @ColumnInfo(defaultValue = "0") val createdAtMillis: Long = System.currentTimeMillis(),
 ) {
     val isRepeating: Boolean get() = repeatDays != 0
 

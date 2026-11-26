@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.focuscredit.app.data.AppDatabase
+import com.focuscredit.app.credit.CreditEvent
+import com.focuscredit.app.credit.CreditRepository
+import com.focuscredit.app.credit.CreditRules
 import com.focuscredit.app.data.Task
 import com.focuscredit.app.reminders.ReminderScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +22,12 @@ import java.time.LocalDate
 class ScheduleViewModel(app: Application) : AndroidViewModel(app) {
     private val dao = AppDatabase.get(app).taskDao()
     private val allTasks = dao.observeAll()
+    private val credit = CreditRepository(app)
+
+    val balance: StateFlow<Int> =
+        credit.balance.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CreditRules.START)
+    val creditHistory: StateFlow<List<CreditEvent>> =
+        credit.history.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate: StateFlow<LocalDate> = _selectedDate.asStateFlow()
@@ -50,6 +59,11 @@ class ScheduleViewModel(app: Application) : AndroidViewModel(app) {
     fun delete(task: Task) = viewModelScope.launch {
         dao.delete(task)
         ReminderScheduler.cancel(getApplication(), task.id)
+    }
+
+    /** Checks for sessions that were skipped (called whenever the app comes to the front). */
+    fun syncCredit() {
+        viewModelScope.launch { credit.sync() }
     }
 
     fun rescheduleReminders() {

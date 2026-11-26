@@ -102,6 +102,7 @@ fun AddTaskScreen(
                 endMinute = end,
                 repeatDays = if (repeating) repeatDays else 0,
                 dateEpochDay = if (repeating) null else dateEpochDay,
+                createdAtMillis = existing?.createdAtMillis ?: System.currentTimeMillis(),
             )
         )
     }
