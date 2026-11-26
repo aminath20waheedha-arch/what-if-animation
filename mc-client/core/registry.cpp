@@ -17,6 +17,51 @@ void Registry::hit(const HitEvent& e) {
     for (auto& m : modules_) if (m->enabled()) m->onHit(e);
 }
 
+static std::string jstr(const std::string& s) {
+    std::string o = "\"";
+    for (char c : s) {
+        if (c == '"' || c == '\\') { o += '\\'; o += c; }
+        else if ((unsigned char)c < 0x20) o += ' ';
+        else o += c;
+    }
+    return o + "\"";
+}
+
+static const char* typeName(SettingType t) {
+    switch (t) {
+        case SettingType::Bool: return "bool";
+        case SettingType::Float: return "float";
+        case SettingType::Int: return "int";
+        case SettingType::Choice: return "choice";
+    }
+    return "float";
+}
+
+std::string Registry::toJson() const {
+    std::ostringstream o;
+    o << "{\"modules\":[";
+    for (size_t i = 0; i < modules_.size(); i++) {
+        auto& m = modules_[i];
+        if (i) o << ",";
+        o << "{\"name\":" << jstr(m->name()) << ",\"desc\":" << jstr(m->description())
+          << ",\"enabled\":" << (m->enabled() ? "true" : "false") << ",\"settings\":[";
+        auto& ss = m->settings();
+        for (size_t j = 0; j < ss.size(); j++) {
+            auto& s = ss[j];
+            if (j) o << ",";
+            o << "{\"id\":" << jstr(s.id) << ",\"label\":" << jstr(s.label)
+              << ",\"type\":\"" << typeName(s.type) << "\",\"value\":" << s.value
+              << ",\"min\":" << s.min << ",\"max\":" << s.max << ",\"step\":" << s.step
+              << ",\"choices\":[";
+            for (size_t k = 0; k < s.choices.size(); k++) o << (k ? "," : "") << jstr(s.choices[k]);
+            o << "]}";
+        }
+        o << "]}";
+    }
+    o << "]}";
+    return o.str();
+}
+
 std::string Registry::serialize() const {
     std::ostringstream o;
     for (auto& m : modules_) {

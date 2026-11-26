@@ -21,6 +21,7 @@ public:
     void tick(float dt);
     void hit(const HitEvent& e);
 
+    std::string toJson() const;  // full module/setting description for the click GUI
     std::string serialize() const;
     void deserialize(const std::string& text);  // unknown keys are ignored (version-safe)
     bool save(const std::string& path) const;

@@ -1,0 +1,11 @@
+// Compile-time stand-in for Minecraft's MainActivity. It is NOT packaged in our
+// APK: at runtime the real class comes from the installed Minecraft.
+plugins { id 'java-library' }
+def sdkDir = System.getenv('ANDROID_HOME')
+if (sdkDir == null) {
+    def p = new Properties()
+    rootProject.file('local.properties').withInputStream { p.load(it) }
+    sdkDir = p.getProperty('sdk.dir')
+}
+dependencies { compileOnly files("$sdkDir/platforms/android-35/android.jar") }
+java { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }

@@ -42,6 +42,12 @@ int main() {
     assert(hit2.enabled() && hit2.find("style")->asInt() == 2);
     assert(hit2.find("duration")->value == 0.5f);
 
+    // JSON for the click GUI contains modules, settings and choices.
+    std::string json = r2.toJson();
+    assert(json.find("\"name\":\"HitAnimation\"") != std::string::npos);
+    assert(json.find("\"type\":\"choice\"") != std::string::npos);
+    assert(json.find("\"Bounce\"") != std::string::npos);
+
     std::puts("all tests passed");
     return 0;
 }
