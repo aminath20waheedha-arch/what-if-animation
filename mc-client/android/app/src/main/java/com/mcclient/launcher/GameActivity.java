@@ -24,7 +24,9 @@ public class GameActivity extends com.mojang.minecraftpe.MainActivity {
 
     @Override
     protected void onCreate(Bundle state) {
+        CrashLog.i("GameActivity.onCreate: starting Minecraft");
         super.onCreate(state);
+        CrashLog.i("GameActivity.onCreate: Minecraft started");
         Toast.makeText(this, Native.gameStatus(), Toast.LENGTH_LONG).show();
     }
 
@@ -45,6 +47,8 @@ public class GameActivity extends com.mojang.minecraftpe.MainActivity {
 
     @Override
     protected void onDestroy() {
+        CrashLog.i("GameActivity.onDestroy");
+        LauncherActivity.markClosed(this);
         if (gui != null) gui.dismiss();
         super.onDestroy();
     }

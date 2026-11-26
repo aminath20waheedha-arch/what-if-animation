@@ -12,8 +12,10 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        CrashLog.install(base);
         System.loadLibrary("mcclient");   // our lib goes in before the game
         GameLoader.inject(base);
+        CrashLog.i("loader ready=" + GameLoader.ready + " error=" + GameLoader.error);
     }
 
     @Override
