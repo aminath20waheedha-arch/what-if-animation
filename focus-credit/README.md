@@ -7,7 +7,7 @@ An Android app that helps you stick to your study schedule. You lose credit when
 | Step | Feature | Done |
 |------|---------|------|
 | 1 | Schedule screen (add / edit / delete tasks, weekly repeat) | ✅ |
-| 2 | Reminders at task start and end | ⬜ |
+| 2 | Reminders at task start and end | ✅ |
 | 3 | Flashcards per subject | ⬜ |
 | 4 | Quiz after each task (≥40% right = +credit, otherwise −credit) | ⬜ |
 | 5 | Credit balance (start 100, missed −10, failed −5, passed +10) | ⬜ |

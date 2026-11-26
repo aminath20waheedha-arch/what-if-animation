@@ -12,6 +12,12 @@ interface TaskDao {
     @Query("SELECT * FROM tasks ORDER BY startMinute ASC")
     fun observeAll(): Flow<List<Task>>
 
+    @Query("SELECT * FROM tasks")
+    suspend fun getAll(): List<Task>
+
+    @Query("SELECT * FROM tasks WHERE id = :id")
+    suspend fun getById(id: Long): Task?
+
     @Insert
     suspend fun insert(task: Task): Long
 

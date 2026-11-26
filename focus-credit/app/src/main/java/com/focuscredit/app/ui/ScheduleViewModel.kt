@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.focuscredit.app.data.AppDatabase
 import com.focuscredit.app.data.Task
+import com.focuscredit.app.reminders.ReminderScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,9 +37,22 @@ class ScheduleViewModel(app: Application) : AndroidViewModel(app) {
         _selectedDate.value = date
     }
 
-    fun save(task: Task) = viewModelScope.launch {
-        if (task.id == 0L) dao.insert(task) else dao.update(task)
+    init {
+        // Make sure every task has its alarms booked (cheap and safe to repeat).
+        rescheduleReminders()
     }
 
-    fun delete(task: Task) = viewModelScope.launch { dao.delete(task) }
+    fun save(task: Task) = viewModelScope.launch {
+        val saved = if (task.id == 0L) task.copy(id = dao.insert(task)) else task.also { dao.update(it) }
+        ReminderScheduler.schedule(getApplication(), saved)
+    }
+
+    fun delete(task: Task) = viewModelScope.launch {
+        dao.delete(task)
+        ReminderScheduler.cancel(getApplication(), task.id)
+    }
+
+    fun rescheduleReminders() {
+        viewModelScope.launch { ReminderScheduler.rescheduleAll(getApplication()) }
+    }
 }

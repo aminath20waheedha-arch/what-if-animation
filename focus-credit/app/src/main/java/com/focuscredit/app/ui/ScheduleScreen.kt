@@ -80,6 +80,7 @@ fun ScheduleApp(vm: ScheduleViewModel = viewModel()) {
             onAdd = { creating = true },
             onEdit = { editing = it },
             onDelete = vm::delete,
+            onExactAlarmsGranted = vm::rescheduleReminders,
         )
     }
 }
@@ -93,6 +94,7 @@ fun ScheduleScreen(
     onAdd: () -> Unit,
     onEdit: (Task) -> Unit,
     onDelete: (Task) -> Unit,
+    onExactAlarmsGranted: () -> Unit = {},
 ) {
     var pendingDelete by remember { mutableStateOf<Task?>(null) }
 
@@ -107,6 +109,7 @@ fun ScheduleScreen(
         },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
+            ReminderPermissionBanner(onExactAlarmsGranted)
             WeekStrip(selectedDate, onSelectDate)
             Text(
                 text = selectedDate.format(DateTimeFormatter.ofPattern("EEEE, d MMMM")),
