@@ -9,7 +9,7 @@ An Android app that helps you stick to your study schedule. You lose credit when
 | 1 | Schedule screen (add / edit / delete tasks, weekly repeat) | ✅ |
 | 2 | Reminders at task start and end | ✅ |
 | 3 | Flashcards per subject | ✅ |
-| 4 | Quiz after each task (≥40% right = +credit, otherwise −credit) | ⬜ |
+| 4 | Quiz after each task (type answer, compare, self-mark; pass = ≥4 of 10) | ✅ |
 | 5 | Credit balance (start 100, missed −10, failed −5, passed +10) | ⬜ |
 | 6 | Blocker for TikTok + Instagram at 0 credit | ⬜ |
 | 7 | vivo setup guide (auto-start, battery, permissions) | ⬜ |

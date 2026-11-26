@@ -46,14 +46,14 @@ import com.focuscredit.app.data.Flashcard
 
 /** Flashcards tab: list of subject decks, or one deck's cards when opened. */
 @Composable
-fun FlashcardsTab(vm: FlashcardsViewModel = viewModel()) {
+fun FlashcardsTab(onQuiz: (String) -> Unit, vm: FlashcardsViewModel = viewModel()) {
     val decks by vm.decks.collectAsStateWithLifecycle()
     val openSubject by vm.openSubject.collectAsStateWithLifecycle()
     val cards by vm.openCards.collectAsStateWithLifecycle()
 
     val subject = openSubject
     if (subject == null) {
-        DeckListScreen(decks, onOpen = vm::open, onCreate = vm::createSubject)
+        DeckListScreen(decks, onOpen = vm::open, onCreate = vm::createSubject, onQuiz = onQuiz)
     } else {
         BackHandler { vm.open(null) }
         DeckScreen(
@@ -63,13 +63,19 @@ fun FlashcardsTab(vm: FlashcardsViewModel = viewModel()) {
             onSave = vm::saveCard,
             onDelete = vm::deleteCard,
             onDeleteAll = { vm.deleteAllCards(subject) },
+            onQuiz = { onQuiz(subject) },
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DeckListScreen(decks: List<Deck>, onOpen: (String) -> Unit, onCreate: (String) -> Unit) {
+private fun DeckListScreen(
+    decks: List<Deck>,
+    onOpen: (String) -> Unit,
+    onCreate: (String) -> Unit,
+    onQuiz: (String) -> Unit,
+) {
     var creating by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -103,7 +109,9 @@ private fun DeckListScreen(decks: List<Deck>, onOpen: (String) -> Unit, onCreate
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
-                items(decks, key = { it.subject.lowercase() }) { deck -> DeckCard(deck) { onOpen(deck.subject) } }
+                items(decks, key = { it.subject.lowercase() }) { deck ->
+                    DeckCard(deck, onQuiz = { onQuiz(deck.subject) }) { onOpen(deck.subject) }
+                }
             }
         }
     }
@@ -131,7 +139,7 @@ private fun DeckListScreen(decks: List<Deck>, onOpen: (String) -> Unit, onCreate
 }
 
 @Composable
-private fun DeckCard(deck: Deck, onClick: () -> Unit) {
+private fun DeckCard(deck: Deck, onQuiz: () -> Unit, onClick: () -> Unit) {
     Card(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -145,11 +153,15 @@ private fun DeckCard(deck: Deck, onClick: () -> Unit) {
                 progress = { (deck.cardCount.toFloat() / QUIZ_CARD_COUNT).coerceAtMost(1f) },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
             )
-            Text(
-                if (deck.quizReady) "✓ Ready for quizzes" else "Add ${deck.cardsNeeded} more to unlock quizzes",
-                style = MaterialTheme.typography.bodySmall,
-                color = if (deck.quizReady) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (deck.quizReady) "✓ Ready for quizzes" else "Add ${deck.cardsNeeded} more to unlock quizzes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (deck.quizReady) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                if (deck.quizReady) TextButton(onClick = onQuiz) { Text("Practice quiz") }
+            }
         }
     }
 }
@@ -163,6 +175,7 @@ private fun DeckScreen(
     onSave: (Flashcard) -> Unit,
     onDelete: (Flashcard) -> Unit,
     onDeleteAll: () -> Unit,
+    onQuiz: () -> Unit,
 ) {
     // null = no editor; id 0 = new card
     var editing by remember { mutableStateOf<Flashcard?>(null) }
@@ -198,7 +211,7 @@ private fun DeckScreen(
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            item { DeckCard(Deck(subject, cards.size)) {} }
+            item { DeckCard(Deck(subject, cards.size), onQuiz = onQuiz) {} }
             if (cards.isEmpty()) {
                 item {
                     Text(

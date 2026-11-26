@@ -14,7 +14,9 @@ import androidx.core.content.ContextCompat
 import com.focuscredit.app.MainActivity
 import com.focuscredit.app.R
 import com.focuscredit.app.data.Task
+import com.focuscredit.app.quiz.QuizRequest
 import com.focuscredit.app.ui.formatMinute
+import java.time.LocalDate
 
 object Notifications {
     private const val CHANNEL_ID = "task_reminders"
@@ -35,16 +37,22 @@ object Notifications {
         if (!hasPermission(context)) return
         ensureChannel(context)
 
+        val launch = Intent(context, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        if (type == ReminderType.END) {
+            // Tapping "Time's up" opens today's quiz for this task.
+            QuizRequest(task.subject, task.id, LocalDate.now().toEpochDay()).writeTo(launch)
+        }
         val open = PendingIntent.getActivity(
             context,
-            0,
-            Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
-            PendingIntent.FLAG_IMMUTABLE,
+            ReminderScheduler.requestCode(task.id, type),
+            launch,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val time = "${formatMinute(task.startMinute)}–${formatMinute(task.endMinute)}"
         val (title, text) = when (type) {
             ReminderType.START -> "Time to start: ${task.title}" to "${task.subject} · $time. Put the phone down!"
-            ReminderType.END -> "Time's up: ${task.title}" to "How did your ${task.subject} session go?"
+            ReminderType.END -> "Time's up: ${task.title}" to "Tap to take your ${task.subject} quiz."
         }
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)

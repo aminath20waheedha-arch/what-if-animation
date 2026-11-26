@@ -7,14 +7,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Task::class, Flashcard::class],
-    version = 2,
+    entities = [Task::class, Flashcard::class, QuizResult::class],
+    version = 3,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)], // v2 adds the flashcards table
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2), // v2 adds the flashcards table
+        AutoMigration(from = 2, to = 3), // v3 adds quiz_results
+    ],
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun flashcardDao(): FlashcardDao
+    abstract fun quizResultDao(): QuizResultDao
 
     companion object {
         @Volatile
