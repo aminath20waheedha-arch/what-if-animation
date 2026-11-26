@@ -33,6 +33,9 @@ class CreditRepository(context: Context) {
 
     val balance: Flow<Int> = dao.observeAll().map { CreditRules.balance(it) }
 
+    /** Read the balance right now (used by the blocker). */
+    suspend fun currentBalance(): Int = CreditRules.balance(dao.getAll())
+
     /** Newest first. */
     val history: Flow<List<CreditEvent>> = dao.observeAll().map { it.asReversed() }
 

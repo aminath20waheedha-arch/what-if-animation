@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -24,10 +25,12 @@ import com.focuscredit.app.quiz.QuizRequest
 import com.focuscredit.app.quiz.QuizScreen
 import com.focuscredit.app.quiz.QuizViewModel
 import com.focuscredit.app.ui.flashcards.FlashcardsTab
+import com.focuscredit.app.ui.setup.SetupTab
 
 private enum class Tab(val label: String, val icon: ImageVector) {
     SCHEDULE("Schedule", Icons.Filled.DateRange),
     FLASHCARDS("Flashcards", Icons.Filled.Edit),
+    SETUP("Setup", Icons.Filled.Settings),
 }
 
 /**
@@ -65,6 +68,7 @@ fun AppRoot(quiz: QuizRequest?, onQuizChange: (QuizRequest?) -> Unit) {
             when (tab) {
                 Tab.SCHEDULE -> ScheduleApp()
                 Tab.FLASHCARDS -> FlashcardsTab(onQuiz = { subject -> onQuizChange(QuizRequest.practice(subject)) })
+                Tab.SETUP -> SetupTab()
             }
         }
     }

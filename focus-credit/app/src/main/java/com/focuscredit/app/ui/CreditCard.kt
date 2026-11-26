@@ -61,7 +61,7 @@ fun CreditCard(balance: Int, history: List<CreditEvent>) {
             )
             Text(
                 when {
-                    balance == 0 -> "Out of credit. Pass a scheduled session's quiz to earn some back."
+                    balance == 0 -> "Out of credit: TikTok & Instagram are locked. Pass a scheduled session's quiz to earn some back."
                     balance <= 30 -> "Running low. Don't skip your next session!"
                     else -> "Pass a quiz +${CreditRules.PASSED} · fail ${CreditRules.FAILED} · skip ${CreditRules.MISSED}"
                 },

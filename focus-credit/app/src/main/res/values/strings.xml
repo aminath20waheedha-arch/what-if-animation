@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Focus Credit</string>
+    <string name="blocker_service_label">Focus Credit blocker</string>
+    <string name="blocker_service_description">Locks TikTok and Instagram when your Focus Credit runs out. It only notices when those apps open and never reads what is on your screen.</string>
 </resources>
