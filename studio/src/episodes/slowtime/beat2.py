@@ -33,10 +33,10 @@ for w in words:
 env, e = np.zeros_like(va), 0.0
 for i, x in enumerate(va):
     e += (x - e) * (0.25 if x > e else 0.004); env[i] = e
-M *= dbg(np.interp(np.arange(M.shape[1]) / SR, np.arange(len(env)) / ctrl, -4.0 * env))[None, :]
+M *= dbg(np.interp(np.arange(M.shape[1]) / SR, np.arange(len(env)) / ctrl, -6.0 * env))[None, :]
 v, _ = read_wav(os.path.join(STUDIO, "public", "slowtime", "voice.wav"))
 Lv = integrated(st(v.mean(0)))
-M *= dbg(Lv - 6.5 - integrated(hp(M, 250, 2)))
+M *= dbg(Lv - 10.0 - integrated(hp(M, 250, 2)))
 M *= min(1.0, 0.98 / np.abs(M).max())
 write_wav(os.path.join(STUDIO, "public", "slowtime", "music.wav"), M)
 print(f"music v2: {DUR:.1f} s, voice {Lv:.1f}, music {integrated(M):.1f} LUFS (>250 Hz {integrated(hp(M, 250, 2)):.1f})")
