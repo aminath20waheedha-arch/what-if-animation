@@ -69,6 +69,7 @@ public class LauncherActivity extends Activity {
             CrashLog.clear();
             getSharedPreferences(PREFS, MODE_PRIVATE).edit().putBoolean(RUNNING, true).commit();
             CrashLog.i("Play pressed");
+            GameLoader.preloadLibraries();
             // By class name, so this screen never needs Minecraft's classes itself.
             Intent i = new Intent();
             i.setClassName(this, getPackageName() + ".GameActivity");

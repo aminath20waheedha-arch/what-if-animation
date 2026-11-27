@@ -11,7 +11,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import dalvik.system.BaseDexClassLoader;
 
 /**
@@ -28,6 +31,8 @@ final class GameLoader {
     static String mcVersion = "?";
     static String error;
     static boolean ready;
+    private static final List<String> libFiles = new ArrayList<>();
+    private static boolean preloaded;
 
     private GameLoader() {}
 
@@ -57,6 +62,7 @@ final class GameLoader {
             if (mcInfo.nativeLibraryDir != null && new File(mcInfo.nativeLibraryDir, "libminecraftpe.so").exists())
                 libs.add(mcInfo.nativeLibraryDir);
             for (String apk : apks) libs.add(apk + "!/lib/" + abi);
+            findLibFiles(apks, abi);
             Method addNative = BaseDexClassLoader.class.getDeclaredMethod("addNativePath", Collection.class);
             addNative.setAccessible(true);
             addNative.invoke(cl, libs);
@@ -70,6 +76,57 @@ final class GameLoader {
         } catch (Throwable t) {
             Throwable c = t.getCause() != null ? t.getCause() : t;
             error = "Could not load Minecraft: " + c;
+        }
+    }
+
+    /** Every .so Minecraft ships, as full paths (extracted folder, or inside the APKs). */
+    private static void findLibFiles(List<String> apks, String abi) {
+        File dir = mcInfo.nativeLibraryDir != null ? new File(mcInfo.nativeLibraryDir) : null;
+        if (dir != null && new File(dir, "libminecraftpe.so").exists()) {
+            File[] fs = dir.listFiles((d, n) -> n.endsWith(".so"));
+            if (fs != null) for (File f : fs) libFiles.add(f.getPath());
+            return;
+        }
+        String prefix = "lib/" + abi + "/";
+        for (String apk : apks) {
+            try (ZipFile z = new ZipFile(apk)) {
+                Enumeration<? extends ZipEntry> en = z.entries();
+                while (en.hasMoreElements()) {
+                    String n = en.nextElement().getName();
+                    if (n.startsWith(prefix) && n.endsWith(".so")) libFiles.add(apk + "!/" + n);
+                }
+            } catch (Exception ignored) {}
+        }
+    }
+
+    /**
+     * Load Minecraft's helper libraries by full path BEFORE the game starts.
+     * Android only searches our app's own lib folder for a library's dependencies,
+     * so libminecraftpe.so could not find e.g. libpairipcore.so on its own.
+     * Libraries are retried in passes until their own dependencies are loaded.
+     */
+    static void preloadLibraries() {
+        if (preloaded || !ready) return;
+        preloaded = true;
+        List<String> pending = new ArrayList<>();
+        for (String f : libFiles) if (!f.endsWith("/libminecraftpe.so")) pending.add(f);
+        CrashLog.i("preloading " + pending.size() + " Minecraft libs: " + pending);
+        boolean progress = true;
+        while (!pending.isEmpty() && progress) {
+            progress = false;
+            for (int i = 0; i < pending.size(); ) {
+                try {
+                    System.load(pending.get(i));
+                    CrashLog.i("loaded " + pending.get(i));
+                    pending.remove(i);
+                    progress = true;
+                } catch (Throwable t) {
+                    i++;
+                }
+            }
+        }
+        for (String f : pending) {
+            try { System.load(f); } catch (Throwable t) { CrashLog.i("could not load " + f + ": " + t.getMessage()); }
         }
     }
 }

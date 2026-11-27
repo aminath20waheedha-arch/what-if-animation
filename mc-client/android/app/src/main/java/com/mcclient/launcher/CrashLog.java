@@ -32,7 +32,15 @@ final class CrashLog {
         });
     }
 
-    static void i(String msg) { Log.i(TAG, msg); }
+    /** Log to logcat AND to our own file (Android 13+ may hide logcat from apps). */
+    static synchronized void i(String msg) {
+        Log.i(TAG, msg);
+        if (dir == null) return;
+        try (FileWriter w = new FileWriter(new File(dir, "client.log"), true)) {
+            w.write(new java.text.SimpleDateFormat("HH:mm:ss.SSS", java.util.Locale.US)
+                    .format(new java.util.Date()) + "  " + msg + "\n");
+        } catch (Exception ignored) {}
+    }
 
     /** Saved Java crash (if any) + last warnings/errors from our app's log. */
     static String collect() {
@@ -50,7 +58,14 @@ final class CrashLog {
             } catch (Exception ignored) {}
         }
 
-        sb.append("\n=== Log ===\n");
+        File own = new File(dir, "client.log");
+        if (own.exists()) {
+            try {
+                sb.append("\n=== Client log ===\n").append(new String(Files.readAllBytes(own.toPath())));
+            } catch (Exception ignored) {}
+        }
+
+        sb.append("\n=== System log ===\n");
         try {
             Process p = Runtime.getRuntime().exec(new String[]{"logcat", "-d", "-v", "brief",
                     "-t", "3000", "MCClient:V", "AndroidRuntime:V", "libc:V", "DEBUG:V",
@@ -72,6 +87,7 @@ final class CrashLog {
 
     static void clear() {
         new File(dir, "crash.txt").delete();
+        new File(dir, "client.log").delete();
         try { Runtime.getRuntime().exec(new String[]{"logcat", "-c"}).waitFor(); } catch (Exception ignored) {}
     }
 }
