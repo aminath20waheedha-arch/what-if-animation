@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a11y_description">Opens the hotspot settings screen and flips the hotspot switch on when your hotspot has turned itself off. Only acts on the Settings app.</string>
+</resources>
